@@ -178,3 +178,21 @@
 .dark .prose-editorial img {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Suppress & hide all ads in Admin Panel */
+body.admin-page ins.adsbygoogle,
+body.admin-page .google-auto-placed,
+body.admin-page [id*="google_ads"],
+body.admin-page iframe[id*="google_ads"],
+body.admin-page iframe[name*="aswift"],
+body.admin-page .adsbygoogle-noablate,
+body.admin-page [data-ad-component] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

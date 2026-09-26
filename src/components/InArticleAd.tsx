@@ -11,6 +11,7 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
   className = '',
 }) => {
   const isPushed = useRef(false);
+  const isNumericSlot = slotId && /^\d+$/.test(slotId);
 
   useEffect(() => {
     if (isPushed.current) return;
@@ -25,29 +26,22 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
     }
   }, [slotId]);
 
-  const isNumericSlot = slotId && /^\d+$/.test(slotId);
-
   return (
     <div
-      className={`my-10 py-4 px-2 sm:px-4 rounded-xl border border-slate-200/70 dark:border-white/5 bg-slate-50/60 dark:bg-white/[0.02] flex flex-col items-center justify-center text-center not-prose transition-all ${className}`}
+      className={`my-8 py-2 w-full flex flex-col items-center justify-center text-center not-prose overflow-hidden transition-all ${className}`}
       data-ad-component="in-article-ad"
     >
-      <div className="flex items-center gap-2 mb-2 select-none">
-        <span className="h-px w-6 bg-slate-200 dark:bg-white/10"></span>
-        <span className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-semibold">
-          Advertisement
-        </span>
-        <span className="h-px w-6 bg-slate-200 dark:bg-white/10"></span>
-      </div>
+      <span className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-semibold mb-1.5 select-none">
+        Advertisement
+      </span>
 
-      <div className="w-full max-w-2xl flex justify-center items-center min-h-[100px] overflow-hidden">
+      <div className="w-full max-w-3xl flex justify-center items-center overflow-hidden">
         <ins
           className="adsbygoogle block w-full text-center"
-          style={{ display: 'block', textAlign: 'center', minHeight: '90px' }}
+          style={{ display: 'block', textAlign: 'center' }}
           data-ad-client={ADSENSE_CLIENT_ID}
-          {...(isNumericSlot ? { 'data-ad-slot': slotId } : {})}
-          data-ad-format="fluid"
-          data-ad-layout="in-article"
+          data-ad-slot={isNumericSlot ? slotId : 'auto'}
+          data-ad-format="auto"
           data-full-width-responsive="true"
         />
       </div>

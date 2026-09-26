@@ -1,45 +1,30 @@
 import React, { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { usePosts } from '../data/postsStore';
+import { checkIsAuthenticated, logoutAdmin, getLoggedInUser } from '../lib/auth';
+import { AdminLoginForm } from '../components/AdminLoginForm';
 import {
   Plus,
   Edit2,
   Trash2,
   Eye,
-  Lock,
   LogOut,
   Copy,
   Check,
   ShoppingBag,
   ShoppingCart,
   FileText,
+  User,
 } from 'lucide-react';
-
-const ADMIN_PIN = '1234';
 
 export const AdminPage: React.FC = () => {
   const { posts, deletePost, resetToDefault } = usePosts();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('inkhel_admin_auth') === 'true';
-  });
-  const [pinInput, setPinInput] = useState('');
-  const [pinError, setPinError] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => checkIsAuthenticated());
   const [copiedCode, setCopiedCode] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (pinInput === ADMIN_PIN) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('inkhel_admin_auth', 'true');
-      setPinError(false);
-    } else {
-      setPinError(true);
-    }
-  };
-
   const handleLogout = () => {
+    logoutAdmin();
     setIsAuthenticated(false);
-    sessionStorage.removeItem('inkhel_admin_auth');
   };
 
   const handleExportPosts = () => {
@@ -49,57 +34,9 @@ export const AdminPage: React.FC = () => {
     setTimeout(() => setCopiedCode(false), 2500);
   };
 
-  // 1. PIN Login Screen
+  // 1. Username & Password Login Screen
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="w-full max-w-md p-8 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 shadow-2xl">
-          <div className="w-12 h-12 rounded-xl bg-accent/15 border border-accent/25 text-accent flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-6 h-6" />
-          </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white text-center mb-1">
-            Inkhel Tech Admin
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-[#8b949e] text-center mb-6">
-            Enter administrator passcode to access article publisher (PIN: <code className="text-accent font-bold">1234</code>)
-          </p>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase text-slate-500 dark:text-[#8b949e] mb-1.5">
-                Passcode / PIN
-              </label>
-              <input
-                type="password"
-                value={pinInput}
-                onChange={(e) => setPinInput(e.target.value)}
-                placeholder="Enter PIN (1234)"
-                autoFocus
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-accent"
-              />
-              {pinError && (
-                <span className="text-xs text-rose-500 mt-1 block">
-                  Invalid passcode. Try 1234.
-                </span>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 rounded-xl bg-accent text-slate-950 font-bold text-sm hover:bg-accent-hover transition-colors shadow-sm"
-            >
-              Sign In to Admin Panel
-            </button>
-          </form>
-
-          <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/10 text-center">
-            <Link to="/" className="text-xs text-slate-500 dark:text-[#8b949e] hover:text-slate-900 dark:hover:text-white transition-colors">
-              ← Return to public website
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <AdminLoginForm onSuccess={() => setIsAuthenticated(true)} />;
   }
 
   // 2. Admin Dashboard Table
@@ -141,12 +78,18 @@ export const AdminPage: React.FC = () => {
             <span>{copiedCode ? 'Code Copied!' : 'Export Code'}</span>
           </button>
 
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-[#c9d1d9]">
+            <User className="w-3.5 h-3.5 text-accent" />
+            <span>{getLoggedInUser() || 'lingtuka'}</span>
+          </div>
+
           <button
             onClick={handleLogout}
             title="Log out of admin"
-            className="p-2.5 rounded-xl bg-white dark:bg-[#161b22] hover:bg-slate-50 dark:hover:bg-white/[0.06] text-slate-500 dark:text-[#8b949e] hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#161b22] hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 dark:text-[#8b949e] dark:hover:text-rose-400 border border-slate-200 dark:border-white/10 text-xs font-semibold transition-colors shadow-sm"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
           </button>
         </div>
       </div>

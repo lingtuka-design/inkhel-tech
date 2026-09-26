@@ -8,18 +8,17 @@ import { AffiliateDealCard } from '../components/AffiliateDealCard';
 import { AuthorBio } from '../components/AuthorBio';
 import { ShareButtons } from '../components/ShareButtons';
 import { RichTextEditor } from '../components/RichTextEditor';
+import { checkIsAuthenticated } from '../lib/auth';
+import { AdminLoginForm } from '../components/AdminLoginForm';
 import {
   ArrowLeft,
   Eye,
   Edit3,
   Save,
-  Lock,
   Sparkles,
   ShoppingCart,
   CheckCircle2,
 } from 'lucide-react';
-
-const ADMIN_PIN = '1234';
 
 export const AdminEditorPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,11 +27,7 @@ export const AdminEditorPage: React.FC = () => {
 
   const { posts, addPost, updatePost } = usePosts();
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('inkhel_admin_auth') === 'true';
-  });
-  const [pinInput, setPinInput] = useState('');
-  const [pinError, setPinError] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => checkIsAuthenticated());
 
   // Tab: 'editor' | 'preview'
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
@@ -103,16 +98,16 @@ export const AdminEditorPage: React.FC = () => {
     );
   }, [editId, posts]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (pinInput === ADMIN_PIN) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('inkhel_admin_auth', 'true');
-      setPinError(false);
-    } else {
-      setPinError(true);
-    }
-  };
+  // Authentication Gate
+  if (!isAuthenticated) {
+    return (
+      <AdminLoginForm
+        onSuccess={() => setIsAuthenticated(true)}
+        title="Inkhel Tech Editor"
+        subtitle="Sign in with your administrator credentials to access the article studio"
+      />
+    );
+  }
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,53 +159,6 @@ export const AdminEditorPage: React.FC = () => {
   // Word count & read time estimator
   const wordCount = content.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   const estimatedReadTime = Math.max(1, Math.ceil(wordCount / 200));
-
-  // PIN Login Gate
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="w-full max-w-md p-8 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 shadow-2xl">
-          <div className="w-12 h-12 rounded-xl bg-accent/15 border border-accent/25 text-accent flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-6 h-6" />
-          </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white text-center mb-1">
-            Inkhel Tech Editor
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-[#8b949e] text-center mb-6">
-            Enter administrator passcode to access the article studio (PIN: <code className="text-accent font-bold">1234</code>)
-          </p>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase text-slate-500 dark:text-[#8b949e] mb-1.5">
-                Passcode / PIN
-              </label>
-              <input
-                type="password"
-                value={pinInput}
-                onChange={(e) => setPinInput(e.target.value)}
-                placeholder="Enter PIN (1234)"
-                autoFocus
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-accent"
-              />
-              {pinError && (
-                <span className="text-xs text-rose-500 mt-1 block">
-                  Invalid passcode. Try 1234.
-                </span>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 rounded-xl bg-accent text-slate-950 font-bold text-sm hover:bg-accent-hover transition-colors"
-            >
-              Unlock Editor
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
 
   const previewPost: Post = {
     id: editId || 'preview',

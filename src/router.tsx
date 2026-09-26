@@ -13,12 +13,21 @@ import { PostDetailPage } from './routes/post.$slug';
 import { AdminPage } from './routes/admin';
 import { AdminEditorPage } from './routes/adminEditor';
 
-// Scroll to top instantly on route changes (no animation)
+// Scroll to top instantly on route changes & notify AdSense of SPA transitions
 const ScrollToTop: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    // Notify Google AdSense of client-side navigation for Auto Ads & Vignettes
+    try {
+      if (typeof window !== 'undefined' && window.adsbygoogle) {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      }
+    } catch {
+      // Safe fallback if blocked by ad-blocker
+    }
   }, [location.pathname]);
 
   return null;

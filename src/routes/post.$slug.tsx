@@ -6,6 +6,7 @@ import { AffiliateDealCard } from '../components/AffiliateDealCard';
 import { QuickSpecs } from '../components/QuickSpecs';
 import { ProsCons } from '../components/ProsCons';
 import { InArticleAd } from '../components/InArticleAd';
+import { AdBanner } from '../components/AdBanner';
 import { ShareButtons } from '../components/ShareButtons';
 import { AuthorBio } from '../components/AuthorBio';
 import {
@@ -205,6 +206,9 @@ export const PostDetailPage: React.FC = () => {
 
         {/* Author Bio Section */}
         <AuthorBio author={post.author} />
+
+        {/* Below Article Ad Slot */}
+        <AdBanner slotId="inkhel-post-bottom" format="horizontal" className="my-8" />
 
         {/* Article Navigation: Previous & Next Article */}
         <nav aria-label="Article pagination" className="my-10 pt-8 border-t border-slate-200 dark:border-white/10">

@@ -11,10 +11,10 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
   className = '',
 }) => {
   const isPushed = useRef(false);
-  const isNumericSlot = slotId && /^\d+$/.test(slotId);
+  const isNumericSlot = Boolean(slotId && /^\d+$/.test(slotId));
 
   useEffect(() => {
-    if (isPushed.current) return;
+    if (!isNumericSlot || isPushed.current) return;
 
     try {
       if (typeof window !== 'undefined') {
@@ -24,7 +24,12 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
     } catch (err) {
       console.warn('AdSense push error in InArticleAd:', err);
     }
-  }, [slotId]);
+  }, [slotId, isNumericSlot]);
+
+  // If no specific numeric Ad Unit slot ID is provided, let Google Auto Ads handle page placements automatically
+  if (!isNumericSlot) {
+    return null;
+  }
 
   return (
     <div
@@ -40,7 +45,7 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
           className="adsbygoogle block w-full text-center"
           style={{ display: 'block', textAlign: 'center' }}
           data-ad-client={ADSENSE_CLIENT_ID}
-          data-ad-slot={isNumericSlot ? slotId : 'auto'}
+          data-ad-slot={slotId}
           data-ad-format="auto"
           data-full-width-responsive="true"
         />

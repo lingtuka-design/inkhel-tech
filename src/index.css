@@ -178,8 +178,3 @@
 .dark .prose-editorial img {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-/* AdSense clean rendering: collapse slot when unfilled */
-ins.adsbygoogle[data-ad-status="unfilled"] {
-  display: none !important;
-}

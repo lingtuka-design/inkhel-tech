@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m18 16 4-4-4-4'/><path d='m6 8-4 4 4 4'/><path d='m14.5 4-5 16'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inkhel Tech — Best Smartphones, Gadgets & Tech Guides</title>
+    <meta name="description" content="Inkhel Tech is an independent technology publication covering smartphones, audio gadgets, buying guides, deals, and tech insights for readers in Mizoram and beyond." />
+    
+    <!-- Inline Theme Initializer (prevents flash & guarantees correct theme class) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('inkhel_theme');
+          if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tech.inkhel.com/" />
+    <meta property="og:title" content="Inkhel Tech — Best Smartphones, Gadgets & Tech Guides" />
+    <meta property="og:description" content="Independent technology publication covering smartphones, gadgets, buying guides, and deals." />
+    <meta property="og:site_name" content="Inkhel Tech" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Inkhel Tech — Best Smartphones, Gadgets & Tech Guides" />
+    <meta name="twitter:description" content="Independent technology publication covering smartphones, gadgets, buying guides, and deals." />
+
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  </head>
+  <body class="bg-[#f8fafc] dark:bg-[#0d1117] text-slate-800 dark:text-[#c9d1d9] min-h-screen selection:bg-accent/30 selection:text-white transition-colors duration-150">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

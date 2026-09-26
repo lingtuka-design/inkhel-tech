@@ -15,9 +15,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('inkhel_theme') as Theme | null;
       if (saved === 'dark' || saved === 'light') return saved;
-      return 'dark'; // Default dark-first editorial
+      return 'light'; // Default light theme
     }
-    return 'dark';
+    return 'light';
   });
 
   useEffect(() => {

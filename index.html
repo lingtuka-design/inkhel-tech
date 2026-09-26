@@ -7,20 +7,21 @@
     <title>Inkhel Tech — Best Smartphones, Gadgets & Tech Guides</title>
     <meta name="description" content="Inkhel Tech is an independent technology publication covering smartphones, audio gadgets, buying guides, deals, and tech insights for readers in Mizoram and beyond." />
     
-    <!-- Inline Theme Initializer (prevents flash & guarantees correct theme class) -->
+    <!-- Inline Theme Initializer (prevents flash & defaults to light) -->
     <script>
       (function() {
         try {
           var saved = localStorage.getItem('inkhel_theme');
-          if (saved === 'light') {
-            document.documentElement.classList.remove('dark');
-            document.documentElement.classList.add('light');
-          } else {
+          if (saved === 'dark') {
             document.documentElement.classList.add('dark');
             document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
           }
         } catch (e) {
-          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
         }
       })();
     </script>

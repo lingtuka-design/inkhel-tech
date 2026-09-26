@@ -40,6 +40,8 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     }
   }, [slotId]);
 
+  const isNumericSlot = slotId && /^\d+$/.test(slotId);
+
   return (
     <div
       className={`my-8 flex flex-col items-center justify-center text-center not-prose ${className}`}
@@ -57,7 +59,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
             minHeight: format === 'rectangle' ? '250px' : '90px',
           }}
           data-ad-client={ADSENSE_CLIENT_ID}
-          {...(slotId ? { 'data-ad-slot': slotId } : {})}
+          {...(isNumericSlot ? { 'data-ad-slot': slotId } : {})}
           data-ad-format={format === 'rectangle' ? 'rectangle' : 'auto'}
           data-full-width-responsive={responsive ? 'true' : 'false'}
         />

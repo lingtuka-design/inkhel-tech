@@ -25,6 +25,8 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
     }
   }, [slotId]);
 
+  const isNumericSlot = slotId && /^\d+$/.test(slotId);
+
   return (
     <div
       className={`my-10 py-4 px-2 sm:px-4 rounded-xl border border-slate-200/70 dark:border-white/5 bg-slate-50/60 dark:bg-white/[0.02] flex flex-col items-center justify-center text-center not-prose transition-all ${className}`}
@@ -43,7 +45,7 @@ export const InArticleAd: React.FC<InArticleAdProps> = ({
           className="adsbygoogle block w-full text-center"
           style={{ display: 'block', textAlign: 'center', minHeight: '90px' }}
           data-ad-client={ADSENSE_CLIENT_ID}
-          {...(slotId ? { 'data-ad-slot': slotId } : {})}
+          {...(isNumericSlot ? { 'data-ad-slot': slotId } : {})}
           data-ad-format="fluid"
           data-ad-layout="in-article"
           data-full-width-responsive="true"

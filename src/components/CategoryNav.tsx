@@ -1,19 +1,23 @@
-import { CATEGORIES, type Category } from '../data/posts';
+import React from 'react';
+import { useCategories } from '../data/postsStore';
 
 interface CategoryNavProps {
-  selectedCategory: Category | 'All';
-  onSelectCategory: (category: Category | 'All') => void;
+  selectedCategory: string;
+  onSelectCategory: (category: string) => void;
 }
 
 export const CategoryNav: React.FC<CategoryNavProps> = ({
   selectedCategory,
   onSelectCategory,
 }) => {
+  const { categories } = useCategories();
+  const allCategories = ['All', ...categories];
+
   return (
     <div className="border-b border-slate-200 dark:border-white/10 bg-white/90 dark:bg-[#0d1117]/85 sticky top-16 z-40 backdrop-blur-md transition-colors duration-150">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center space-x-2 py-3 overflow-x-auto no-scrollbar scroll-smooth">
-          {CATEGORIES.map((cat) => {
+          {allCategories.map((cat) => {
             const isActive = selectedCategory === cat;
             return (
               <button

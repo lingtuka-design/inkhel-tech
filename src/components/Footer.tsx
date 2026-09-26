@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { ArrowUp, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useCategories } from '../data/postsStore';
 
 interface FooterProps {
   onCategorySelect?: (cat: string) => void;
@@ -9,6 +10,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
   const { toggleTheme, isDark } = useTheme();
+  const { categories } = useCategories();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -45,7 +47,7 @@ export const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
           <div className="md:col-span-3 space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Categories</h4>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-[#8b949e]">
-              {['Smartphones', 'Audio & Gadgets', 'Buying Guides', 'Deals'].map((cat) => (
+              {categories.map((cat) => (
                 <li key={cat}>
                   <Link
                     to="/"

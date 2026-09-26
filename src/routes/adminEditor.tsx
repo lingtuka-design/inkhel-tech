@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { usePosts } from '../data/postsStore';
+import { usePosts, useCategories } from '../data/postsStore';
 import type { Post } from '../data/posts';
 import { QuickSpecs } from '../components/QuickSpecs';
 import { ProsCons } from '../components/ProsCons';
@@ -18,6 +18,7 @@ import {
   Sparkles,
   ShoppingCart,
   CheckCircle2,
+  Plus,
 } from 'lucide-react';
 
 export const AdminEditorPage: React.FC = () => {
@@ -26,6 +27,7 @@ export const AdminEditorPage: React.FC = () => {
   const editId = search.id;
 
   const { posts, addPost, updatePost } = usePosts();
+  const { categories, addCategory } = useCategories();
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => checkIsAuthenticated());
 
@@ -33,13 +35,18 @@ export const AdminEditorPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  // Category creation inline state
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [categoryError, setCategoryError] = useState('');
+
   // Form Fields
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
-  const [category, setCategory] = useState<'Smartphones' | 'Audio & Gadgets' | 'Buying Guides' | 'Deals'>('Smartphones');
+  const [category, setCategory] = useState<string>('Smartphones');
   const [author, setAuthor] = useState('iTECH Editorial');
   const [publishedAt, setPublishedAt] = useState('');
-  const [readTime, setReadTime] = useState(6);
+  const [readTime, setReadTime] = useState(5);
   const [image, setImage] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [tags, setTags] = useState('');
@@ -88,14 +95,12 @@ export const AdminEditorPage: React.FC = () => {
       }
     }
 
-    // Default starter template for new post
+    // Clean empty starting state for new post (no unwanted pre-filled text)
     setPublishedAt(new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
-    setImage('https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1400&q=80');
-    setProsText('Class-leading performance\nStunning display quality\nLong battery life');
-    setConsText('Expensive retail pricing\nNo charger included in the box');
-    setContent(
-      `<p class="lead">Write a compelling opening paragraph introducing the device or topic...</p>\n\n<h2>Design and Build Quality</h2>\n<p>Explain the materials, ergonomics, and daily handling experience...</p>\n\n<blockquote>"Notable quote or key takeaway from our editorial testing."</blockquote>\n\n<h2>Display and Multimedia</h2>\n<p>Describe color accuracy, outdoor peak brightness, and audio performance...</p>\n\n<h2>Camera Capabilities</h2>\n<p>Detailed breakdown of primary sensor, low-light performance, and zoom fidelity...</p>\n\n<h2>Verdict: Should You Buy It?</h2>\n<p>Final editorial conclusion and recommendations for buyers...</p>`
-    );
+    setImage('');
+    setProsText('');
+    setConsText('');
+    setContent('');
   }, [editId, posts]);
 
   // Authentication Gate
@@ -322,19 +327,85 @@ export const AdminEditorPage: React.FC = () => {
               {/* Grid: Category, Slug, Author, ReadTime */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-[#8b949e] mb-1">
-                    Category *
-                  </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value as any)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-[#f0f6fc] text-sm font-medium focus:outline-none focus:border-accent"
-                  >
-                    <option value="Smartphones">Smartphones</option>
-                    <option value="Audio & Gadgets">Audio & Gadgets</option>
-                    <option value="Buying Guides">Buying Guides</option>
-                    <option value="Deals">Deals</option>
-                  </select>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-slate-500 dark:text-[#8b949e]">
+                      Category *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddingCategory(!isAddingCategory);
+                        setCategoryError('');
+                      }}
+                      className="text-[11px] font-semibold text-accent hover:underline flex items-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span>{isAddingCategory ? 'Select' : 'New'}</span>
+                    </button>
+                  </div>
+
+                  {isAddingCategory ? (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          value={newCategoryName}
+                          onChange={(e) => {
+                            setNewCategoryName(e.target.value);
+                            setCategoryError('');
+                          }}
+                          placeholder="New category..."
+                          className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const res = addCategory(newCategoryName);
+                              if (res.success) {
+                                setCategory(newCategoryName.trim());
+                                setNewCategoryName('');
+                                setIsAddingCategory(false);
+                                setCategoryError('');
+                              } else {
+                                setCategoryError(res.message || 'Error');
+                              }
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const res = addCategory(newCategoryName);
+                            if (res.success) {
+                              setCategory(newCategoryName.trim());
+                              setNewCategoryName('');
+                              setIsAddingCategory(false);
+                              setCategoryError('');
+                            } else {
+                              setCategoryError(res.message || 'Error');
+                            }
+                          }}
+                          className="px-2.5 py-2 bg-accent text-slate-950 font-bold rounded-xl text-xs hover:bg-accent-hover transition-colors shrink-0"
+                        >
+                          Add
+                        </button>
+                      </div>
+                      {categoryError && (
+                        <span className="text-[11px] text-rose-500 block leading-tight">{categoryError}</span>
+                      )}
+                    </div>
+                  ) : (
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-[#f0f6fc] text-sm font-medium focus:outline-none focus:border-accent"
+                    >
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
 
                 <div>

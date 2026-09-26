@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { usePosts } from '../data/postsStore';
+import { usePosts, useCategories } from '../data/postsStore';
 import { checkIsAuthenticated, logoutAdmin, getLoggedInUser } from '../lib/auth';
 import { AdminLoginForm } from '../components/AdminLoginForm';
 import {
@@ -15,12 +15,18 @@ import {
   ShoppingCart,
   FileText,
   User,
+  Tag,
+  X,
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
   const { posts, deletePost, resetToDefault } = usePosts();
+  const { categories, addCategory, deleteCategory, resetCategories } = useCategories();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => checkIsAuthenticated());
   const [copiedCode, setCopiedCode] = useState(false);
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const [newCategoryInput, setNewCategoryInput] = useState('');
+  const [categoryError, setCategoryError] = useState('');
 
   const handleLogout = () => {
     logoutAdmin();
@@ -69,6 +75,20 @@ export const AdminPage: React.FC = () => {
             <span>New Article (Full Page)</span>
           </Link>
 
+          {/* Manage Categories Button */}
+          <button
+            onClick={() => setShowCategoryManager(!showCategoryManager)}
+            title="Manage website categories"
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-colors shadow-sm ${
+              showCategoryManager
+                ? 'bg-accent/15 border-accent text-accent'
+                : 'bg-white dark:bg-[#161b22] hover:bg-slate-50 dark:hover:bg-white/[0.06] text-slate-700 dark:text-[#c9d1d9] border-slate-200 dark:border-white/10'
+            }`}
+          >
+            <Tag className="w-4 h-4 text-accent" />
+            <span>Categories ({categories.length})</span>
+          </button>
+
           <button
             onClick={handleExportPosts}
             title="Copy all posts as TypeScript code"
@@ -93,6 +113,120 @@ export const AdminPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Category Management Panel */}
+      {showCategoryManager && (
+        <div className="mb-8 p-6 sm:p-7 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#161b22] shadow-sm animate-in fade-in duration-200">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-5">
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-[#f0f6fc] flex items-center gap-2">
+                <Tag className="w-4 h-4 text-accent" />
+                <span>Category Management (Siam / Enkawl)</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-[#8b949e] mt-0.5">
+                Category thar siam la, website pumpui leh article editor-ah an lang nghal zel ang.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowCategoryManager(false)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Add Category Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const res = addCategory(newCategoryInput);
+              if (res.success) {
+                setNewCategoryInput('');
+                setCategoryError('');
+              } else {
+                setCategoryError(res.message || 'Error adding category');
+              }
+            }}
+            className="flex flex-col sm:flex-row gap-2.5 mb-5"
+          >
+            <input
+              type="text"
+              value={newCategoryInput}
+              onChange={(e) => {
+                setNewCategoryInput(e.target.value);
+                setCategoryError('');
+              }}
+              placeholder="Category hming thar (e.g. Gaming, Laptops, AI, Mizo Tech)..."
+              className="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent"
+            />
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-accent text-slate-950 font-bold text-xs sm:text-sm hover:bg-accent-hover transition-transform active:scale-95 shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Category Siam Thar</span>
+            </button>
+          </form>
+
+          {categoryError && (
+            <p className="text-xs text-rose-500 mb-4 -mt-2 font-medium">{categoryError}</p>
+          )}
+
+          {/* Categories Badges List */}
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+              Category awm mekte ({categories.length}):
+            </label>
+            <div className="flex flex-wrap gap-2.5">
+              {categories.map((cat) => {
+                const count = posts.filter((p) => p.category === cat).length;
+                return (
+                  <div
+                    key={cat}
+                    className="flex items-center gap-2 pl-3.5 pr-2 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-[#c9d1d9]"
+                  >
+                    <span>{cat}</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-slate-200/80 dark:bg-white/10 text-[10px] text-slate-600 dark:text-[#8b949e]">
+                      {count} {count === 1 ? 'post' : 'posts'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (count > 0) {
+                          if (!confirm(`Category "${cat}" ah hian article ${count} a awm a, i paih duh tak tak em?`)) {
+                            return;
+                          }
+                        } else if (!confirm(`Category "${cat}" hi i paih duh em?`)) {
+                          return;
+                        }
+                        deleteCategory(cat);
+                      }}
+                      title={`Delete "${cat}"`}
+                      className="p-1 rounded-md hover:bg-rose-100 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-500 transition-colors ml-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/5 flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Category te hi a hmasa (default: Smartphones, Audio & Gadgets, Buying Guides, Deals) ah dah let leh i duh em?')) {
+                    resetCategories();
+                  }
+                }}
+                className="text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-[#8b949e] underline"
+              >
+                Reset categories to default
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Posts Table */}
       <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#161b22] overflow-hidden shadow-sm">

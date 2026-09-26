@@ -3,7 +3,7 @@ export interface Post {
   slug: string;
   title: string;
   excerpt: string;
-  category: 'Smartphones' | 'Audio & Gadgets' | 'Buying Guides' | 'Deals';
+  category: string;
   author: string;
   publishedAt: string;
   readTime: number;
@@ -38,7 +38,7 @@ export const CATEGORIES = [
   'Deals',
 ] as const;
 
-export type Category = (typeof CATEGORIES)[number];
+export type Category = string;
 
 export const POSTS: Post[] = [
   {

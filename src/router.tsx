@@ -13,12 +13,12 @@ import { PostDetailPage } from './routes/post.$slug';
 import { AdminPage } from './routes/admin';
 import { AdminEditorPage } from './routes/adminEditor';
 
-// Scroll to top component on route changes
+// Scroll to top instantly on route changes (no animation)
 const ScrollToTop: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [location.pathname]);
 
   return null;

@@ -21,12 +21,12 @@ export const Header: React.FC<HeaderProps> = ({ onSearchClick }) => {
             to="/"
             className="flex items-center gap-2 group transition-opacity hover:opacity-90"
           >
-            <div className="w-8 h-8 rounded-md bg-accent flex items-center justify-center text-slate-950 font-black text-lg shadow-sm">
-              T
+            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-slate-950 font-black text-sm shadow-sm tracking-tight">
+              iT
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold tracking-wider text-lg sm:text-xl text-slate-900 dark:text-white font-sans flex items-center gap-1.5">
-                INKHEL <span className="text-accent font-medium">TECH</span>
+              <span className="font-black tracking-tight text-xl sm:text-2xl text-slate-900 dark:text-white font-sans flex items-center">
+                <span className="text-accent">i</span>TECH
               </span>
             </div>
           </Link>

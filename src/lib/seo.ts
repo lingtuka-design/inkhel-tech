@@ -12,7 +12,7 @@ export interface SeoProps {
 
 export function useSeo({
   title,
-  description = 'Inkhel Tech is an independent technology publication covering smartphones, gadgets, buying guides, and deals.',
+  description = 'iTECH is an independent technology publication covering smartphones, gadgets, buying guides, and deals.',
   canonicalUrl = 'https://tech.inkhel.com/',
   ogType = 'website',
   ogImage = 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80',
@@ -20,7 +20,7 @@ export function useSeo({
 }: SeoProps) {
   useEffect(() => {
     // 1. Title
-    const formattedTitle = title.includes('Inkhel Tech') ? title : `${title} | Inkhel Tech`;
+    const formattedTitle = title.includes('iTECH') ? title : `${title} | iTECH`;
     document.title = formattedTitle;
 
     // Helper to update or set meta
@@ -53,7 +53,7 @@ export function useSeo({
     setMeta('og:type', ogType, true);
     setMeta('og:url', canonicalUrl, true);
     setMeta('og:image', ogImage, true);
-    setMeta('og:site_name', 'Inkhel Tech', true);
+    setMeta('og:site_name', 'iTECH', true);
 
     // Twitter Card
     setMeta('twitter:card', 'summary_large_image');
@@ -62,7 +62,7 @@ export function useSeo({
     setMeta('twitter:image', ogImage);
 
     // JSON-LD Structured Data
-    const scriptId = 'inkhel-seo-jsonld';
+    const scriptId = 'itech-seo-jsonld';
     let scriptElement = document.getElementById(scriptId) as HTMLScriptElement | null;
     if (!scriptElement) {
       scriptElement = document.createElement('script');
@@ -86,7 +86,7 @@ export function useSeo({
         },
         publisher: {
           '@type': 'Organization',
-          name: 'Inkhel Tech',
+          name: 'iTECH',
           logo: {
             '@type': 'ImageObject',
             url: 'https://tech.inkhel.com/logo.png',
@@ -102,12 +102,12 @@ export function useSeo({
       const siteSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'Inkhel Tech',
+        name: 'iTECH',
         url: 'https://tech.inkhel.com/',
         description: description,
         publisher: {
           '@type': 'Organization',
-          name: 'Inkhel Tech',
+          name: 'iTECH',
         },
       };
       scriptElement.textContent = JSON.stringify(siteSchema);

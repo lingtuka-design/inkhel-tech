@@ -22,11 +22,11 @@ export const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
           {/* Brand Col */}
           <div className="md:col-span-6 space-y-3">
             <Link to="/" className="inline-flex items-center gap-2 group">
-              <div className="w-7 h-7 rounded bg-accent flex items-center justify-center text-slate-950 font-black text-sm">
-                T
+              <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center text-slate-950 font-black text-xs shadow-sm tracking-tight">
+                iT
               </div>
-              <span className="font-extrabold tracking-wider text-xl text-slate-900 dark:text-white font-sans">
-                INKHEL <span className="text-accent font-medium">TECH</span>
+              <span className="font-black tracking-tight text-xl text-slate-900 dark:text-white font-sans">
+                <span className="text-accent">i</span>TECH
               </span>
             </Link>
 
@@ -68,16 +68,16 @@ export const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
                 <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition-colors">Home</Link>
               </li>
               <li>
-                <a href="#about" onClick={(e) => { e.preventDefault(); alert("Inkhel Tech is an independent tech publication providing trusted consumer electronics reviews."); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">About</a>
+                <a href="#about" onClick={(e) => { e.preventDefault(); alert("iTECH is an independent tech publication providing trusted consumer electronics reviews."); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">About</a>
               </li>
               <li>
                 <a href="mailto:contact@inkhel.com" className="hover:text-slate-900 dark:hover:text-white transition-colors">Contact</a>
               </li>
               <li>
-                <a href="#privacy" onClick={(e) => { e.preventDefault(); alert("Privacy Policy: Inkhel Tech respects your privacy. We use standard analytics and affiliate partner tracking without collecting personal identifiers."); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#privacy" onClick={(e) => { e.preventDefault(); alert("Privacy Policy: iTECH respects your privacy. We use standard analytics and affiliate partner tracking without collecting personal identifiers."); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">Privacy Policy</a>
               </li>
               <li>
-                <a href="#terms" onClick={(e) => { e.preventDefault(); alert("Terms of Service: All content copyright 2026 Inkhel Tech. Reviews and test findings are independent."); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">Terms of Service</a>
+                <a href="#terms" onClick={(e) => { e.preventDefault(); alert("Terms of Service: All content copyright 2026 iTECH. Reviews and test findings are independent."); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">Terms of Service</a>
               </li>
               <li>
                 <Link to="/admin" className="text-accent hover:underline transition-colors flex items-center gap-1 font-medium">
@@ -91,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-[#8b949e]">
           <div>
-            © 2026 <strong className="text-slate-700 dark:text-slate-300">Inkhel Tech</strong>. All rights reserved.
+            © 2026 <strong className="text-slate-700 dark:text-slate-300">iTECH</strong> (tech.inkhel.com). All rights reserved.
           </div>
 
           <div className="flex items-center gap-4">

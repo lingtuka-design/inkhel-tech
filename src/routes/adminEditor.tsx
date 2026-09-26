@@ -37,7 +37,7 @@ export const AdminEditorPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [category, setCategory] = useState<'Smartphones' | 'Audio & Gadgets' | 'Buying Guides' | 'Deals'>('Smartphones');
-  const [author, setAuthor] = useState('Inkhel Tech Editorial');
+  const [author, setAuthor] = useState('iTECH Editorial');
   const [publishedAt, setPublishedAt] = useState('');
   const [readTime, setReadTime] = useState(6);
   const [image, setImage] = useState('');
@@ -103,7 +103,7 @@ export const AdminEditorPage: React.FC = () => {
     return (
       <AdminLoginForm
         onSuccess={() => setIsAuthenticated(true)}
-        title="Inkhel Tech Editor"
+        title="iTECH Editor"
         subtitle="Sign in with your administrator credentials to access the article studio"
       />
     );

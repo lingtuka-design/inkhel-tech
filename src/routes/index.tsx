@@ -17,9 +17,9 @@ export const HomePage: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useSeo({
-    title: 'Inkhel Tech — Best Smartphones, Gadgets & Tech Guides',
+    title: 'iTECH — Best Smartphones, Gadgets & Tech Guides',
     description:
-      'Inkhel Tech is an independent technology publication covering smartphones, audio gadgets, buying guides, deals, and tech insights for readers in Mizoram and beyond.',
+      'iTECH is an independent technology publication covering smartphones, audio gadgets, buying guides, deals, and tech insights for readers in Mizoram and beyond.',
     canonicalUrl: 'https://tech.inkhel.com/',
   });
 

@@ -11,7 +11,7 @@ interface AdminLoginFormProps {
 
 export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
   onSuccess,
-  title = 'Inkhel Tech Admin',
+  title = 'iTECH Admin',
   subtitle = 'Sign in with your administrator credentials to continue',
 }) => {
   const [username, setUsername] = useState('');

@@ -5,14 +5,14 @@ interface AuthorBioProps {
   author?: string;
 }
 
-export const AuthorBio: React.FC<AuthorBioProps> = ({ author = 'Inkhel Tech Editorial' }) => {
+export const AuthorBio: React.FC<AuthorBioProps> = ({ author = 'iTECH Editorial' }) => {
   return (
     <section className="my-10 p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 shadow-sm transition-colors">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
         {/* Author Avatar */}
         <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-accent to-emerald-600 p-0.5 shrink-0 shadow-sm">
           <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-accent font-black text-xl">
-            IT
+            iT
           </div>
         </div>
 
@@ -29,7 +29,7 @@ export const AuthorBio: React.FC<AuthorBioProps> = ({ author = 'Inkhel Tech Edit
           </div>
 
           <p className="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">
-            Inkhel Tech is a technology publication covering smartphones, gadgets, buying guides, deals, and useful technology updates for readers in Mizoram and beyond. Our tests are conducted independently with genuine consumer-focused recommendations.
+            iTECH is an independent technology publication covering smartphones, gadgets, buying guides, deals, and useful technology updates for readers in Mizoram and beyond. Our tests are conducted independently with genuine consumer-focused recommendations.
           </p>
 
           <div className="pt-2 flex items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-slate-500 dark:text-[#8b949e]">

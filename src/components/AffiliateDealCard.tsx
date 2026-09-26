@@ -69,7 +69,7 @@ export const AffiliateDealCard: React.FC<AffiliateDealCardProps> = ({
       </div>
 
       <div className="mt-3 text-[11px] text-slate-500 dark:text-[#8b949e] text-center sm:text-left">
-        * When you purchase through our links, Inkhel Tech may earn an affiliate commission at no extra cost to you.
+        * When you purchase through our links, iTECH may earn an affiliate commission at no extra cost to you.
       </div>
     </div>
   );

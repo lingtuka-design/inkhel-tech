@@ -29,7 +29,7 @@ export const PostDetailPage: React.FC = () => {
   const nextPost = currentIndex !== -1 && currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
 
   useSeo({
-    title: post ? `${post.title} | Inkhel Tech` : 'Article Not Found | Inkhel Tech',
+    title: post ? `${post.title} | iTECH` : 'Article Not Found | iTECH',
     description: post?.excerpt,
     canonicalUrl: post ? `https://tech.inkhel.com/post/${post.slug}` : undefined,
     ogType: 'article',
@@ -53,7 +53,7 @@ export const PostDetailPage: React.FC = () => {
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-slate-950 font-bold text-sm hover:bg-accent-hover transition-colors"
         >
           <Home className="w-4 h-4" />
-          Back to Inkhel Tech Homepage
+          Back to iTECH Homepage
         </Link>
       </div>
     );

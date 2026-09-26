@@ -11,6 +11,14 @@ export function getStoredPosts(): Post[] {
     if (data) {
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // Automatically merge any newly published baked-in posts
+        const existingIds = new Set(parsed.map((p: Post) => p.id));
+        const newBakedPosts = INITIAL_POSTS.filter((p) => !existingIds.has(p.id));
+        if (newBakedPosts.length > 0) {
+          const merged = [...newBakedPosts, ...parsed];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          return merged;
+        }
         return parsed;
       }
     }

@@ -42,6 +42,64 @@ export type Category = string;
 
 export const POSTS: Post[] = [
   {
+    id: "realme-16-pro-harry-potter",
+    slug: "realme-16-pro-5g-harry-potter-edition",
+    title: "Realme 16 Pro 5G Harry Potter Edition: Hogwarts Theme Mawi Khawm Chingte Tana Duanchhuah",
+    excerpt: "Realme chuan Warner Bros. nen thawkdunin Realme 16 Pro 5G Harry Potter Edition a tlangzarh a. Khawvel pumah 5,000 chauh siam niin, Hogwarts trunk bawm, Magic Brown leather hnung leh custom software thlengin uluk taka duan a ni.",
+    category: "Smartphones",
+    author: "iTECH Editorial",
+    publishedAt: "Sep 26, 2026",
+    readTime: 5,
+    image: "/images/realme-16-pro-harry-potter.jpg",
+    tags: ["realme", "harry potter", "smartphones", "special edition", "realme 16 pro", "hogwarts", "review"],
+    specs: {
+      display: "6.78-inch AMOLED (1,272 x 2,772), 144Hz Refresh Rate",
+      processor: "MediaTek Dimensity 7300 Max (4nm)",
+      camera: "200MP Main (f/1.8, OIS) + 8MP Ultrawide | 50MP Front",
+      battery: "7,000mAh Massive Silicon-Carbon",
+      charging: "80W SuperVOOC Fast Charge",
+    },
+    pros: [
+      "Uluk em em a duan Harry Potter & Hogwarts theme (Magic Brown leather, crest, & custom software)",
+      "Hogwarts trunk bawm ropui, letter, ticket leh case mawi tak tak a tel kim vek",
+      "7,000mAh battery lian em em leh 80W charging chak tak",
+      "200MP camera chiang tak leh 144Hz AMOLED display mawi",
+      "Khawvel pumah unit 5,000 chauh siam a nih avangin collector-te tan a hlu hle"
+    ],
+    cons: [
+      "Khawvel pumah unit 5,000 chauh a nih avangin lei tur a vang dawn",
+      "Realme 16 Pro pangngai aiin a to hle (Rs. 62,999)"
+    ],
+    content: `<p class="lead">Special-edition smartphone-te hi chu a tlangpuiin rawng thar, logo leh theme wallpaper thlak mai mai, model pangngai ang reng a ang duh hle a. Mahse, Realme chuan Warner Bros. nen an thawhdunna thar ber: <strong>Realme 16 Pro 5G Harry Potter Edition</strong> ah chuan kawng thar, ropui zawk min chhawpchhuah sak a ni. A phone, software, a bawm (packaging) leh a hmanraw telte (accessories) thlengin, Hogwarts theme hmanga uluk taka duang thar (redesign) vek a ni.</p>
+
+<p>Khawvel pumah <strong>5,000 chauh</strong> siam chhuah a ni a, he edition hi phone rawng thlak satliah mai nilovin, a thil khawm ching (collectors) te leh Harry Potter ngaisangtute (fans) tana siam liau liau a ni zawk.</p>
+
+<h2>Hogwarts Trunk Bawm leh Accessories Kimchang</h2>
+<p>He phone hlutna hi a bawm atangin a intan a. Smartphone bawm pangngai hman ahnekin, Realme chuan Harry Potter-a Hogwarts thawmhnaw bawm (trunk) hmelhmang puin bawm a siam a. A bawm chhungah hian a phone, a rawng uk milpui Harry Potter hming inziak leh Hogwarts chhinchhiahna (crest) chuang phone case a tel a, a rawng mil thlap charging hmanrua te a tel bawk.</p>
+
+<p>A thehmeh thil dangte hian collector-te tan hlutna a belhchhah hle a. A bawmah hian a theme mil postcard te, Hogwarts design SIM ejector te, Hogwarts acceptance letter (lehkha) leh Platform 9¾ train ticket te a tel a, a bawm hawn (unboxing) chhung zawng pawhin a film nen inlaichinna thuk tak nei ang maiah mi a insiam thei a ni.</p>
+
+<blockquote>"He phone hi sticker bel mawi satliah mai nilovin, collector-te leh Harry Potter fans tana special edition tura siam liau liau a ni."</blockquote>
+
+<h2>Design: Magic Brown Vun Hnung leh Hedwig Mit Camera</h2>
+<p>A phone ngei pawh hi nasa taka chei danglam a ni. Realme chuan a rawng uk thim hi <em>"Magic Brown"</em> tiin a vuah a, a hnung lam (rear panel) chu vun (leather) ang maia nem a ni. A hnunga argyle-style (a theka awm) thla lang hi a film-a Wizard's Chess an khelh lai atanga an lak chhuah a ni a. A laiah tak hian Hogwarts crest lian tak, house pali te awmna leh an thupui <em>"Draco Dormiens Nunquam Titillandus"</em> tih inziak chu a chuang bawk. Nisa hnuaiah chuan, he chhinchhiahna (emblem) hian Hogwarts crest rawng dik tak a rawn ti lang thei a ni.</p>
+
+<p>A camera dahna pawhin Harry Potter thil bawk a entir a. Camera ring lian tak pahnihte chu muihla (Hedwig) mit ang maia siam a ni a, a rawng ukah chuan rangkachak rawnga mawi taka cheina in a ep tlat bawk. A dinglam sirah chuan <em>"Welcome to Hogwarts"</em> tih mawi taka ker a ni bawk a. Heng thil te avang hian he phone hi special edition ropui tak a tling a ni.</p>
+
+<h2>Software: Realme UI 7.0 & Hogwarts Customization</h2>
+<p>Realme hian a phone chhung (software) lamah pawh Hogwarts design hi an hmang chhunzawm a. He phone hian Android 16-a innghat Realme UI 7.0 a hmang a, a milpui wallpaper, icon leh a chhung lan dan (interface elements) engkim siam danglam vek a ni. Phone app chuan telephone bawm sen design a hmang a, Notes in pat-hmul ziakna (quill) a hmang a, Games in chess milem hmangin, Phone Manager in Hogwarts crest a hmang bawk. A lock screen-a fingerprint animation pangngai pawh "H" hawrawp hmangin an thlak a ni.</p>
+
+<h2>Hardware & Battery: 200MP Camera leh 7,000mAh Battery</h2>
+<p>Harry Potter styling thlak danglam anih bakah hian, a hardware lam erawh chu Realme 16 Pro 5G pangngai nen a inang vek thung. 6.78-inch AMOLED display, 144Hz refresh rate neiin, MediaTek Dimensity 7300 Max processor a hmang a. Camera lamah 200-megapixel primary sensor (OIS tel), 8-megapixel ultra-wide camera leh hma lamah 50-megapixel camera a awm a ni.</p>
+
+<p>A 7,000mAh battery leh 80W charging theihna pawh thlak danglam a ni lo a, model pangngaia a thatna em em battery daih theihna chu a la chhawm nung zel a ni.</p>
+
+<h2>Thutlukna (Verdict)</h2>
+<p>A tlangpuiin, Realme 16 Pro 5G Harry Potter Edition hi hardware thar ai mahin a ngaisangtute (fans) tana film nena inlaichin taka hman theihna tura buatsaih a ni mah zawk. Magic Brown rawng, Hogwarts crest, Hedwig-mit anga siam camera leh a sira thu ker te hian he phone hi a tidanglam bik hle a, a software chei danglam leh bawm mawi takte hian a theme a tipuitling hle bawk.</p>
+
+<p>Khawvel pumah 5,000 chauh zawrh tur a nih avangin, Realme chuan he phone hi smartphone chi dang pakhat mai nilovin, collector's edition (khawm chingte hlut tur) ni hmasa ber turin an duang a. <strong>Rs. 62,999</strong> man a ni a, Realme 16 Pro 5G pangngai aiin a to zawk hle a, a to chhan pawh a phone leh a bawm vela Harry Potter theme uchuak taka hman a nih vang a ni.</p>`
+  },
+  {
     id: "1",
     slug: "samsung-galaxy-s26-ultra-review",
     title: "Samsung Galaxy S26 Ultra Review: The New Benchmark for Flagship Power",

@@ -28,38 +28,59 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     const systemInstruction = `
 You are an award-winning senior technology journalist and chief gadget editor for iTECH (tech.inkhel.com).
-Your mission is to take raw English tech news, smartphone leaks, gadget announcements, or reviews and transform them into a comprehensive, captivating, highly readable article in natural, authentic Mizo language.
+Your mission is to take raw English tech news, leaks, in-depth reviews, specifications, or announcements and write a FULL-LENGTH, highly engaging, in-depth editorial article in natural, authentic Mizo language.
 
-CRITICAL GUIDELINES:
-1. All prose must be in fluent, idiomatic, natural Mizo (e.g. use natural Mizo tech terms like "tlangzarh", "thlalak fiah tak", "chhe mai mai lo turin", "daih rei", "hralh chhuahna man").
-2. Write a captivating headline in Mizo (title) that creates interest without being clickbait.
-3. Content MUST be clean semantic HTML string:
-   - Start with <p class="lead"> summarizing the biggest news or revelation in 2-3 engaging Mizo sentences.
-   - Organize logically with descriptive <h2> subheadings in Mizo (e.g. Design, Display & Screen, Camera & Photography, Performance & Processor, Battery & Charging, Thutlukna / Verdict).
-   - Include an editorial highlight quote: <blockquote>"..."</blockquote>
-   - Use <p>, <strong>, <em>, <ul>, <li> effectively for easy readability.
-   - Conclude with a strong final editorial recommendation under <h2>Thutlukna (Verdict)</h2>.
-4. Extract structured Hardware Specifications tailored directly to the device category:
-   Return an object of 4 to 6 defining hardware specifications for that specific product:
-   - For Phone: { "Display": "...", "Processor": "...", "Camera": "...", "Battery": "...", "Charging": "..." }
-   - For Laptop: { "Processor / CPU": "...", "RAM & Storage": "...", "Graphics / GPU": "...", "Display": "...", "Battery Life": "...", "Weight": "..." }
-   - For Tablet: { "Display": "...", "Processor": "...", "Stylus & Keyboard": "...", "Cameras": "...", "Battery": "..." }
-   - For Camera: { "Sensor": "...", "Video Resolution": "...", "ISO Range": "...", "Stabilization": "...", "Lens Mount": "..." }
-   - For Smartwatch: { "Display": "...", "Sensors & Health": "...", "Battery Life": "...", "Water Resistance": "..." }
-   - For Microphone: { "Polar Pattern": "...", "Frequency Response": "...", "Connectivity": "...", "Weight": "..." }
-   - For Earbuds/Audio: { "Driver Size": "...", "Noise Cancellation": "...", "Battery Life": "...", "Connectivity": "..." }
-   - For Other Gadgets: Extract the 4-6 most essential specs mentioned in the source.
-5. Provide 3-5 Pros (advantages) in Mizo.
-6. Provide 1-3 Cons (drawbacks, high price, missing charger, etc.) in Mizo.
-7. Return an appropriate Category chosen strictly from this list:
-   - "Phone"
-   - "Laptop"
-   - "Tablet"
-   - "Camera"
-   - "Smartwatch"
-   - "Gadgets"
-   - "Tech News"
-8. Return 5-8 relevant lowercase tags.
+CRITICAL EDITORIAL RULES:
+1. DO NOT WRITE A BRIEF SUMMARY OR SHORT DIGEST!
+   - The user explicitly dislikes short summaries ("Ka duh aiin a kai tawi thei lutuk a, tawi fel deuhin a rawn khaikhawm mai a, a fuh chiah lo. A ngaihnawm chi, article type-in thui tawk ziak rawh").
+   - You MUST write a detailed, expansive, magazine-grade editorial article. Do not abbreviate or condense the information provided.
+   - Expand on every single detail: explain what each feature means for everyday users, compare it with previous generations or rival products, discuss battery life, real-world camera performance, display quality, heat management, and value for money.
+   - Length requirement: Write a substantial, deep long-form article with multiple rich paragraphs under every single section (aim for 800 to 1,500+ words in fluent Mizo).
+
+2. STRUCTURE & SUBHEADINGS (Mandatory & Retained):
+   - Use descriptive, logical <h2> subheadings in Mizo to organize the article beautifully.
+   - Under EACH <h2> subheading, write at least 2 to 4 detailed, engaging paragraphs. Do not stop at just 1-2 short sentences.
+   - Typical <h2> sections include (tailor to the product category):
+     * <h2>Hmelhmang leh Siam Dan (Design, Ergonomics & Build Quality)</h2>
+     * <h2>Display leh Visual Experience (Screen, Brightness & Refresh Rate)</h2>
+     * <h2>Camera leh Thlalak Fiahna (Sensor Setup, Portrait, Video & Low Light)</h2>
+     * <h2>Chakna leh Performance (Processor, Chipset, Gaming & Thermal Cooling)</h2>
+     * <h2>Battery leh Charging (Endurance, Screen-on-time & Fast Charging Speed)</h2>
+     * <h2>Software, AI leh Features Dangte (UI, Updates, Connectivity & Extras)</h2>
+     * <h2>Man leh Lei Theih Hun Tur (Expected/Confirmed India Price & Launch Date)</h2>
+     * <h2>Thutlukna leh Ngaihdan (Verdict & Editorial Buying Recommendation)</h2>
+
+3. TONE & WRITING STYLE:
+   - Natural, engaging, authoritative, and conversational Mizo (e.g. use natural Mizo phrases: "mit la tak", "kutah a bet tha hle", "game khelh lai pawha lum vut vut lo", "daih rei tawk tak", "a man phu ngei", "chhe mai mai lo tur", "ngaihven a hlawh").
+   - Engaging opening: Start with an immersive hook paragraph explaining why this tech matters, what problem it solves, and what makes it special.
+   - Include at least one memorable editorial highlight quote: <blockquote>"..."</blockquote>
+   - Use bold text (<strong>) strategically for key hardware specs (e.g. <strong>Snapdragon 8 Gen 4</strong>, <strong>50MP Sony LYT-900</strong>, <strong>6,500mAh</strong>) so key information pops out.
+   - Use bullet points (<ul><li>) where feature highlights or comparisons add clarity.
+
+4. CATEGORY SELECTION:
+   Choose strictly ONE from this list:
+   "Phone" | "Laptop" | "Tablet" | "Camera" | "Smartwatch" | "Gadgets" | "Tech News"
+
+5. HARDWARE SPECIFICATIONS:
+   Extract 5 to 7 key hardware specs tailored to the device category:
+   - Phone: Display, Processor, Rear Camera, Front Camera, Battery, Charging.
+   - Laptop: Processor / CPU, RAM & Storage, GPU / Graphics, Screen & Display, Battery Life, Weight & Ports.
+   - Tablet: Screen & Resolution, Processor / Chip, Stylus & Keyboard, Battery, Cameras.
+   - Camera: Sensor Type, Video Capabilities, ISO Range, Autofocus / IBIS, Lens Mount.
+   - Smartwatch: Screen / Case Size, Sensors & Health, Battery Life, Water Rating, OS.
+   - Audio / Gadgets: Driver Size, Active Noise Cancellation, Battery Life, Latency / Connectivity.
+   - Other: Top 5 essential specs.
+
+6. PROS & CONS:
+   - 4-6 detailed Pros (advantages) in Mizo explaining why it's great.
+   - 2-4 realistic Cons (drawbacks, missing features, high price, no charger in box, etc.) in Mizo.
+
+7. EXCERPT & HEADLINE:
+   - "title": A compelling, professional Mizo headline.
+   - "slug": English-friendly URL slug (e.g. "vivo-x200-pro-review-mizo-specs-price").
+   - "excerpt": A punchy, captivating 2-sentence hook in Mizo.
+   - "readTime": Estimated reading time based on article length (usually 6-10 mins).
+   - "tags": 6-10 relevant lowercase tags.
 
 Return ONLY a valid JSON object matching this schema:
 {
@@ -67,14 +88,14 @@ Return ONLY a valid JSON object matching this schema:
   "slug": "string",
   "category": "Phone" | "Laptop" | "Tablet" | "Camera" | "Smartwatch" | "Gadgets" | "Tech News",
   "excerpt": "string",
-  "content": "string (valid HTML)",
+  "content": "string (rich, full-length HTML with multiple <h2> sections and multi-paragraph depth)",
   "specs": {
     "Spec Name": "Spec Value"
   },
   "pros": ["string"],
   "cons": ["string"],
   "tags": ["string"],
-  "readTime": 5
+  "readTime": 7
 }
 `;
 
@@ -105,14 +126,15 @@ Return ONLY a valid JSON object matching this schema:
                 role: 'user',
                 parts: [
                   {
-                    text: `${systemInstruction}\n\nHere is the raw English tech text to transform into a Mizo article:\n\n${text}`,
+                    text: `${systemInstruction}\n\nHere is the raw English tech text to transform into an in-depth, captivating, long-form Mizo article:\n\n${text}`,
                   },
                 ],
               },
             ],
             generationConfig: {
               response_mime_type: 'application/json',
-              temperature: 0.7,
+              temperature: 0.75,
+              max_output_tokens: 8192,
             },
           }),
         });

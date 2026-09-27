@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Search, ExternalLink, Star } from 'lucide-react';
+import { Search, ExternalLink, Star, ArrowRight } from 'lucide-react';
+
+export const AFFILIATE_TAG = 'lalmalsawmtlu-21';
 
 interface TrendingPhone {
   id: string;
@@ -10,7 +12,7 @@ interface TrendingPhone {
   platform: 'amazon' | 'flipkart';
   imageUrl: string;
   rating?: number;
-  url: string;
+  amazonQuery: string;
   isTopDeal?: boolean;
 }
 
@@ -24,7 +26,7 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=300&q=80',
     rating: 4.6,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'iPhone 16 Pro 256GB',
     isTopDeal: true,
   },
   {
@@ -36,7 +38,7 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=300&q=80',
     rating: 4.5,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'Samsung Galaxy S24 Ultra 5G',
   },
   {
     id: '3',
@@ -47,7 +49,7 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=300&q=80',
     rating: 4.4,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'OnePlus 12 5G',
   },
   {
     id: '4',
@@ -55,10 +57,10 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     price: '₹29,999',
     originalPrice: '₹36,999',
     discountText: 'Special Price',
-    platform: 'flipkart',
+    platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=300&q=80',
     rating: 4.3,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'Motorola Edge 50 Pro 5G',
   },
   {
     id: '5',
@@ -69,7 +71,7 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=300&q=80',
     rating: 4.2,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'Samsung Galaxy M35 5G',
   },
   {
     id: '6',
@@ -80,7 +82,7 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=300&q=80',
     rating: 4.4,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'Realme GT 6T 5G',
   },
   {
     id: '7',
@@ -91,7 +93,7 @@ const DEFAULT_PHONES: TrendingPhone[] = [
     platform: 'amazon',
     imageUrl: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=300&q=80',
     rating: 4.3,
-    url: 'https://link.amazon/B03OFfaXS',
+    amazonQuery: 'Redmi Note 13 Pro Plus 5G',
   },
 ];
 
@@ -99,9 +101,7 @@ interface AmazonDealSidebarProps {
   dealUrl?: string;
 }
 
-export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
-  dealUrl = 'https://link.amazon/B03OFfaXS',
-}) => {
+export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredPhones = useMemo(() => {
@@ -110,14 +110,22 @@ export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
     return DEFAULT_PHONES.filter(
       (p) =>
         p.name.toLowerCase().includes(term) ||
-        p.platform.toLowerCase().includes(term)
+        p.amazonQuery.toLowerCase().includes(term)
     );
   }, [searchTerm]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      const searchUrl = `https://www.amazon.in/s?k=${encodeURIComponent(searchTerm.trim())}&tag=${AFFILIATE_TAG}`;
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <aside className="rounded-2xl overflow-hidden bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 shadow-sm">
       
-      {/* 1. Red Header Banner (Matching user reference) */}
+      {/* 1. Red Header Banner */}
       <div className="bg-[#d30f0f] px-4 py-3 flex items-center justify-between">
         <h3 className="text-white font-black text-sm tracking-wider uppercase flex items-center gap-1.5">
           <span>⚡ TRENDING PRODUCTS »</span>
@@ -128,23 +136,44 @@ export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
       </div>
 
       {/* 2. Search Input */}
-      <div className="p-3 bg-slate-50 dark:bg-[#0d1117] border-b border-slate-200 dark:border-white/10">
-        <div className="relative">
-          <Search className="w-4 h-4 text-rose-600 absolute left-3 top-1/2 -translate-y-1/2" />
+      <form onSubmit={handleSearchSubmit} className="p-3 bg-slate-50 dark:bg-[#0d1117] border-b border-slate-200 dark:border-white/10">
+        <div className="relative flex items-center">
+          <Search className="w-4 h-4 text-rose-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search phone (e.g. iPhone, Samsung)..."
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-white/15 bg-white dark:bg-[#161b22] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-rose-600 font-sans"
+            className="w-full pl-9 pr-8 py-2 text-xs rounded-lg border border-slate-300 dark:border-white/15 bg-white dark:bg-[#161b22] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-rose-600 font-sans"
           />
+          {searchTerm.trim() && (
+            <button
+              type="submit"
+              title="Search on Amazon with Affiliate"
+              className="absolute right-2 text-slate-400 hover:text-rose-600 p-1"
+            >
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
-      </div>
+        {searchTerm.trim() && (
+          <div className="mt-1.5 text-right">
+            <button
+              type="submit"
+              className="text-[11px] font-semibold text-rose-600 hover:underline"
+            >
+              Search &ldquo;{searchTerm}&rdquo; on Amazon.in &rarr;
+            </button>
+          </div>
+        )}
+      </form>
 
       {/* 3. Product List */}
       <div className="divide-y divide-slate-100 dark:divide-white/[0.06]">
         {filteredPhones.map((phone) => {
-          const itemUrl = phone.url || dealUrl;
+          // Direct Amazon Affiliate Link for this exact phone
+          const itemUrl = `https://www.amazon.in/s?k=${encodeURIComponent(phone.amazonQuery)}&tag=${AFFILIATE_TAG}`;
+
           return (
             <div
               key={phone.id}
@@ -155,12 +184,17 @@ export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
               }`}
             >
               {/* Product Thumbnail */}
-              <div className="relative w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0d1117] shrink-0 p-1 flex items-center justify-center shadow-xs">
+              <a
+                href={itemUrl}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="relative w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0d1117] shrink-0 p-1 flex items-center justify-center shadow-xs group"
+              >
                 <img
                   src={phone.imageUrl}
                   alt={phone.name}
                   loading="lazy"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
                 />
                 {phone.rating && (
                   <div className="absolute bottom-1 left-1 bg-white/95 dark:bg-black/90 px-1 py-0.5 rounded text-[9px] font-bold text-slate-800 dark:text-slate-200 flex items-center gap-0.5 shadow-xs border border-slate-200 dark:border-white/10">
@@ -168,7 +202,7 @@ export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
                     <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
                   </div>
                 )}
-              </div>
+              </a>
 
               {/* Product Info */}
               <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
@@ -198,15 +232,9 @@ export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
                 {/* Platform Badge & Buy Now Button */}
                 <div className="flex items-center justify-between gap-2 mt-2 pt-1 border-t border-slate-100 dark:border-white/5">
                   {/* Platform Logo */}
-                  {phone.platform === 'amazon' ? (
-                    <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 tracking-tight flex items-center">
-                      amazon<span className="text-amber-500 font-black">.in</span>
-                    </span>
-                  ) : (
-                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-tight">
-                      Flipkart ⚡
-                    </span>
-                  )}
+                  <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 tracking-tight flex items-center">
+                    amazon<span className="text-amber-500 font-black">.in</span>
+                  </span>
 
                   {/* BUY NOW Button */}
                   <a
@@ -225,15 +253,15 @@ export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
         })}
       </div>
 
-      {/* 4. Footer link to see all deals */}
+      {/* 4. Footer link to see all mobile deals */}
       <div className="p-3 bg-slate-50/80 dark:bg-[#0d1117]/80 border-t border-slate-200 dark:border-white/10 text-center">
         <a
-          href={dealUrl}
+          href={`https://www.amazon.in/s?k=Smartphones+Offers&tag=${AFFILIATE_TAG}`}
           target="_blank"
           rel="noopener noreferrer sponsored"
           className="text-xs font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 inline-flex items-center gap-1.5 transition-colors"
         >
-          <span>View All Trending Tech Deals »</span>
+          <span>View All Smartphone Deals on Amazon »</span>
         </a>
       </div>
     </aside>

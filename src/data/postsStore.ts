@@ -169,6 +169,35 @@ export function usePosts() {
     }
   };
 
+  const toggleFeatured = async (postToToggle: Post) => {
+    const willBeFeatured = !postToToggle.featured;
+
+    // 1. Instant optimistic update: single hero featured at any time
+    const updated = posts.map((p) => {
+      if (p.id === postToToggle.id) {
+        return { ...p, featured: willBeFeatured };
+      }
+      if (willBeFeatured && p.featured) {
+        return { ...p, featured: false };
+      }
+      return p;
+    });
+
+    setPosts(updated);
+    savePostsToStorage(updated);
+
+    // 2. Persist to Cloudflare D1 atomically
+    try {
+      await fetch('/api/posts/featured', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: postToToggle.id, featured: willBeFeatured }),
+      });
+    } catch (e) {
+      console.error('Error toggling featured in D1', e);
+    }
+  };
+
   const resetToDefault = () => {
     savePostsToStorage(INITIAL_POSTS);
     setPosts(INITIAL_POSTS);
@@ -186,6 +215,7 @@ export function usePosts() {
     addPost,
     updatePost,
     deletePost,
+    toggleFeatured,
     resetToDefault,
     triggerFullSync,
     isSyncing,

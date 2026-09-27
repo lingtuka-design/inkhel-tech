@@ -19,10 +19,11 @@ import {
   X,
   Cloud,
   Sparkles,
+  Star,
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
-  const { posts, deletePost, resetToDefault, triggerFullSync, isSyncing } = usePosts();
+  const { posts, deletePost, toggleFeatured, resetToDefault, triggerFullSync, isSyncing } = usePosts();
   const { categories, addCategory, deleteCategory, resetCategories } = useCategories();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => checkIsAuthenticated());
   const [copiedCode, setCopiedCode] = useState(false);
@@ -277,6 +278,7 @@ export const AdminPage: React.FC = () => {
             <thead>
               <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#090d13] text-[11px] uppercase tracking-wider text-slate-500 dark:text-[#8b949e]">
                 <th className="py-3.5 px-4 sm:px-6">Article</th>
+                <th className="py-3.5 px-4 text-center">Featured Hero</th>
                 <th className="py-3.5 px-4">Category</th>
                 <th className="py-3.5 px-4">Date</th>
                 <th className="py-3.5 px-4">Affiliate</th>
@@ -313,6 +315,29 @@ export const AdminPage: React.FC = () => {
                         </span>
                       </div>
                     </div>
+                  </td>
+
+                  {/* Featured Hero Selection Column */}
+                  <td className="py-4 px-4 whitespace-nowrap text-center">
+                    <label
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl cursor-pointer select-none border transition-all active:scale-95 ${
+                        p.featured
+                          ? 'border-amber-500/50 bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold shadow-sm'
+                          : 'border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] text-slate-500 dark:text-[#8b949e] hover:border-amber-500/40 hover:text-amber-500'
+                      }`}
+                      title={p.featured ? "Featured story a ni mek e (Untick turin hmet rawh)" : "Homepage Hero Story atan tick rawh"}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={Boolean(p.featured)}
+                        onChange={() => toggleFeatured(p)}
+                        className="w-4 h-4 rounded text-amber-500 accent-amber-500 focus:ring-0 cursor-pointer"
+                      />
+                      <Star className={`w-3.5 h-3.5 ${p.featured ? 'fill-amber-500 text-amber-500' : 'text-slate-400'}`} />
+                      <span className="text-xs font-semibold">
+                        {p.featured ? 'Featured' : 'Tick'}
+                      </span>
+                    </label>
                   </td>
 
                   <td className="py-4 px-4 whitespace-nowrap">

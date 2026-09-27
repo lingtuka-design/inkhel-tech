@@ -1,5 +1,99 @@
-import React from 'react';
-import { ShoppingCart, ExternalLink, Flame, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, ExternalLink, Star } from 'lucide-react';
+
+interface TrendingPhone {
+  id: string;
+  name: string;
+  price: string;
+  originalPrice?: string;
+  discountText?: string;
+  platform: 'amazon' | 'flipkart';
+  imageUrl: string;
+  rating?: number;
+  url: string;
+  isTopDeal?: boolean;
+}
+
+const DEFAULT_PHONES: TrendingPhone[] = [
+  {
+    id: '1',
+    name: 'iPhone 16 Pro (256 GB) - Natural Titanium',
+    price: '₹1,19,900',
+    originalPrice: '₹1,29,900',
+    discountText: 'Flat ₹10,000 Discount*',
+    platform: 'amazon',
+    imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=300&q=80',
+    rating: 4.6,
+    url: 'https://link.amazon/B03OFfaXS',
+    isTopDeal: true,
+  },
+  {
+    id: '2',
+    name: 'Samsung Galaxy S24 Ultra 5G (12GB RAM, 256GB)',
+    price: '₹1,21,999',
+    originalPrice: '₹1,34,999',
+    discountText: 'Flat ₹13,000 Discount*',
+    platform: 'amazon',
+    imageUrl: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=300&q=80',
+    rating: 4.5,
+    url: 'https://link.amazon/B03OFfaXS',
+  },
+  {
+    id: '3',
+    name: 'OnePlus 12 (16GB RAM, 512GB) - Silky Black',
+    price: '₹64,999',
+    originalPrice: '₹69,999',
+    discountText: 'Flat ₹5,000 Discount*',
+    platform: 'amazon',
+    imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=300&q=80',
+    rating: 4.4,
+    url: 'https://link.amazon/B03OFfaXS',
+  },
+  {
+    id: '4',
+    name: 'Motorola Edge 50 Pro 5G (8GB RAM, 256GB)',
+    price: '₹29,999',
+    originalPrice: '₹36,999',
+    discountText: 'Special Price',
+    platform: 'flipkart',
+    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=300&q=80',
+    rating: 4.3,
+    url: 'https://link.amazon/B03OFfaXS',
+  },
+  {
+    id: '5',
+    name: 'Samsung Galaxy M35 5G (6GB RAM, 128GB)',
+    price: '₹15,999',
+    originalPrice: '₹19,999',
+    discountText: 'Flat ₹4,000 Off*',
+    platform: 'amazon',
+    imageUrl: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=300&q=80',
+    rating: 4.2,
+    url: 'https://link.amazon/B03OFfaXS',
+  },
+  {
+    id: '6',
+    name: 'Realme GT 6T 5G (8GB RAM, 128GB)',
+    price: '₹30,999',
+    originalPrice: '₹33,999',
+    discountText: 'Flat ₹3,000 Discount*',
+    platform: 'amazon',
+    imageUrl: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=300&q=80',
+    rating: 4.4,
+    url: 'https://link.amazon/B03OFfaXS',
+  },
+  {
+    id: '7',
+    name: 'Redmi Note 13 Pro+ 5G (8GB, 256GB)',
+    price: '₹27,999',
+    originalPrice: '₹31,999',
+    discountText: 'Limited Deal',
+    platform: 'amazon',
+    imageUrl: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=300&q=80',
+    rating: 4.3,
+    url: 'https://link.amazon/B03OFfaXS',
+  },
+];
 
 interface AmazonDealSidebarProps {
   dealUrl?: string;
@@ -8,135 +102,138 @@ interface AmazonDealSidebarProps {
 export const AmazonDealSidebar: React.FC<AmazonDealSidebarProps> = ({
   dealUrl = 'https://link.amazon/B03OFfaXS',
 }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredPhones = useMemo(() => {
+    if (!searchTerm.trim()) return DEFAULT_PHONES;
+    const term = searchTerm.toLowerCase();
+    return DEFAULT_PHONES.filter(
+      (p) =>
+        p.name.toLowerCase().includes(term) ||
+        p.platform.toLowerCase().includes(term)
+    );
+  }, [searchTerm]);
+
   return (
-    <aside className="space-y-6">
-      {/* Main Deal Card */}
-      <div className="rounded-2xl bg-white dark:bg-[#161b22] border border-amber-500/30 dark:border-amber-500/25 p-5 shadow-sm relative overflow-hidden transition-all duration-200 hover:border-amber-500/50">
-        
-        {/* Glow ambient background accent */}
-        <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+    <aside className="rounded-2xl overflow-hidden bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 shadow-sm">
+      
+      {/* 1. Red Header Banner (Matching user reference) */}
+      <div className="bg-[#d30f0f] px-4 py-3 flex items-center justify-between">
+        <h3 className="text-white font-black text-sm tracking-wider uppercase flex items-center gap-1.5">
+          <span>⚡ TRENDING PRODUCTS »</span>
+        </h3>
+        <span className="text-[10px] text-white/80 font-bold uppercase tracking-wider bg-black/20 px-2 py-0.5 rounded">
+          Mobiles
+        </span>
+      </div>
 
-        {/* Top Header Badge */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-slate-200/80 dark:border-white/10 mb-4">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            <Flame className="w-4 h-4 fill-amber-500 text-amber-500 animate-pulse" />
-            <span>Amazon Deal of the Day</span>
-          </div>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-[10px] tracking-wide uppercase">
-            64% OFF
-          </span>
-        </div>
-
-        {/* Product Image with Discount Badge */}
-        <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 dark:bg-[#0d1117] border border-slate-200/60 dark:border-white/10 mb-4 group">
-          <img
-            src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=800&q=80"
-            alt="E GATE Atom 3X 4K Home Cinema Projector"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      {/* 2. Search Input */}
+      <div className="p-3 bg-slate-50 dark:bg-[#0d1117] border-b border-slate-200 dark:border-white/10">
+        <div className="relative">
+          <Search className="w-4 h-4 text-rose-600 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search phone (e.g. iPhone, Samsung)..."
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-white/15 bg-white dark:bg-[#161b22] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-rose-600 font-sans"
           />
-          <div className="absolute top-2.5 left-2.5">
-            <span className="px-2 py-0.5 rounded-md bg-amber-500 text-slate-950 font-black text-[11px] shadow-sm">
-              SAVE ₹14,000
-            </span>
-          </div>
-          <div className="absolute bottom-2.5 right-2.5">
-            <span className="px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-sm text-white font-mono text-[10px]">
-              ⭐ 4.3 (Amazon Choice)
-            </span>
-          </div>
-        </div>
-
-        {/* Title & Short Description */}
-        <div className="mb-3">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#8b949e]">
-            Home Entertainment · Projector
-          </span>
-          <h3 className="text-base font-bold text-slate-900 dark:text-[#f0f6fc] leading-snug mt-0.5 line-clamp-2">
-            E GATE Atom 3X Projector 4K Ultra HD Native 1080p
-          </h3>
-          <p className="text-xs text-slate-600 dark:text-[#8b949e] mt-1 line-clamp-2">
-            Rotatable Design, Android Netflix Prime, ARC-HDMI, WiFi-6 & BT Screen Mirroring.
-          </p>
-        </div>
-
-        {/* Key Feature Chips */}
-        <div className="grid grid-cols-2 gap-1.5 mb-4 text-[11px]">
-          <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>4K / Native 1080p</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>300 ISO Lumens</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>Netflix & Prime</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>WiFi-6 & Bluetooth</span>
-          </div>
-        </div>
-
-        {/* Price & Savings */}
-        <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0d1117] border border-slate-200/80 dark:border-white/10 mb-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900 dark:text-white">
-              ₹7,990
-            </span>
-            <span className="text-xs text-slate-400 line-through font-mono">
-              ₹21,990
-            </span>
-            <span className="ml-auto text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              64% off
-            </span>
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-[#8b949e] mt-0.5">
-            Inclusive of all taxes · Free Prime Delivery
-          </p>
-        </div>
-
-        {/* Main CTA Button */}
-        <a
-          href={dealUrl}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 shadow-md transition-all duration-150 transform active:scale-[0.98]"
-        >
-          <ShoppingCart className="w-4 h-4 text-slate-950" />
-          <span>Check Deal on Amazon</span>
-          <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-        </a>
-
-        {/* Micro footer */}
-        <div className="mt-3 text-center">
-          <span className="text-[10px] text-slate-400 dark:text-[#8b949e]">
-            * Price & availability subject to change on Amazon.in
-          </span>
         </div>
       </div>
 
-      {/* Quick Category Deals Promo Box */}
-      <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 text-white p-5 border border-white/10 shadow-sm relative overflow-hidden">
-        <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-accent">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Electronics Deals Hub</span>
-        </div>
-        <h4 className="text-sm font-bold text-white mb-1">
-          Amazon Great Tech Offers
-        </h4>
-        <p className="text-xs text-slate-300 mb-4 leading-relaxed">
-          Smartphones, Earbuds, Smartwatches leh Laptops discount man tlawm zualte en kual rawh le.
-        </p>
+      {/* 3. Product List */}
+      <div className="divide-y divide-slate-100 dark:divide-white/[0.06]">
+        {filteredPhones.map((phone) => {
+          const itemUrl = phone.url || dealUrl;
+          return (
+            <div
+              key={phone.id}
+              className={`p-3.5 flex items-start gap-3 transition-colors ${
+                phone.isTopDeal
+                  ? 'bg-amber-50/70 dark:bg-amber-500/[0.07]'
+                  : 'hover:bg-slate-50/80 dark:hover:bg-white/[0.02]'
+              }`}
+            >
+              {/* Product Thumbnail */}
+              <div className="relative w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0d1117] shrink-0 p-1 flex items-center justify-center shadow-xs">
+                <img
+                  src={phone.imageUrl}
+                  alt={phone.name}
+                  loading="lazy"
+                  className="w-full h-full object-contain"
+                />
+                {phone.rating && (
+                  <div className="absolute bottom-1 left-1 bg-white/95 dark:bg-black/90 px-1 py-0.5 rounded text-[9px] font-bold text-slate-800 dark:text-slate-200 flex items-center gap-0.5 shadow-xs border border-slate-200 dark:border-white/10">
+                    <span>{phone.rating}</span>
+                    <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                  </div>
+                )}
+              </div>
+
+              {/* Product Info */}
+              <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
+                <div>
+                  <a
+                    href={itemUrl}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="text-xs font-bold text-slate-900 dark:text-[#f0f6fc] hover:text-rose-600 dark:hover:text-rose-400 transition-colors line-clamp-2 leading-snug"
+                  >
+                    {phone.name}
+                  </a>
+
+                  {/* Price & Discount */}
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mt-1.5">
+                    <span className="text-sm font-black text-slate-900 dark:text-white">
+                      {phone.price}
+                    </span>
+                    {phone.discountText && (
+                      <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                        {phone.discountText}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Platform Badge & Buy Now Button */}
+                <div className="flex items-center justify-between gap-2 mt-2 pt-1 border-t border-slate-100 dark:border-white/5">
+                  {/* Platform Logo */}
+                  {phone.platform === 'amazon' ? (
+                    <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 tracking-tight flex items-center">
+                      amazon<span className="text-amber-500 font-black">.in</span>
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-tight">
+                      Flipkart ⚡
+                    </span>
+                  )}
+
+                  {/* BUY NOW Button */}
+                  <a
+                    href={itemUrl}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#d30f0f] hover:bg-[#b00c0c] text-white text-[11px] font-black uppercase tracking-wider shadow-xs transition-transform duration-100 active:scale-95"
+                  >
+                    <span>BUY NOW</span>
+                    <ExternalLink className="w-2.5 h-2.5 opacity-80" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 4. Footer link to see all deals */}
+      <div className="p-3 bg-slate-50/80 dark:bg-[#0d1117]/80 border-t border-slate-200 dark:border-white/10 text-center">
         <a
           href={dealUrl}
           target="_blank"
           rel="noopener noreferrer sponsored"
-          className="inline-flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white border border-white/10 transition-colors"
+          className="text-xs font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 inline-flex items-center gap-1.5 transition-colors"
         >
-          <span>Explore All Tech Deals</span>
-          <ArrowRight className="w-3.5 h-3.5 text-accent" />
+          <span>View All Trending Tech Deals »</span>
         </a>
       </div>
     </aside>

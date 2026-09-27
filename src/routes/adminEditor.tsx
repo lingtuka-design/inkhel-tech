@@ -635,23 +635,26 @@ export const AdminEditorPage: React.FC = () => {
               </div>
 
               {/* Featured Image Upload & URL */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold uppercase text-slate-500 dark:text-[#8b949e]">
                     Featured Image *
                   </label>
-                  <span className="text-[11px] font-normal text-slate-400">High-resolution banner (16:9 ratio)</span>
+                  <span className="text-[11px] font-normal text-slate-400">16:9 banner</span>
                 </div>
 
-                <div className="p-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 bg-slate-50/60 dark:bg-[#090d13]/60 hover:border-accent/60 transition-colors">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-[#090d13]/70">
                   {image ? (
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                      <div className="relative w-full sm:w-52 aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#161b22] shrink-0 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      {/* Compact Thumbnail Preview */}
+                      <div className="relative w-24 h-16 rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#161b22] shrink-0 shadow-sm">
                         <img src={image} alt="Preview" className="w-full h-full object-cover" />
                       </div>
-                      <div className="flex-1 w-full space-y-2.5">
-                        <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                          <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      
+                      {/* Details & URL */}
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                           <span>Thlalak thlan fel a ni e</span>
                         </div>
                         <input
@@ -659,54 +662,47 @@ export const AdminEditorPage: React.FC = () => {
                           value={image}
                           onChange={(e) => setImage(e.target.value)}
                           placeholder="Image URL"
-                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 focus:outline-none focus:border-accent"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 focus:outline-none focus:border-accent"
                         />
-                        <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                          <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors">
-                            {isUploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UploadCloud className="w-3.5 h-3.5" />}
-                            <span>{isUploadingImage ? 'Uploading...' : 'Thlalak dang thlak rawh'}</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              disabled={isUploadingImage}
-                              className="hidden"
-                              onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setIsUploadingImage(true);
-                                  const url = await uploadFile(file);
-                                  if (url) setImage(url);
-                                  setIsUploadingImage(false);
-                                }
-                              }}
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setImage('')}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 text-xs font-semibold transition-colors"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                            <span>Paih rawh</span>
-                          </button>
-                        </div>
+                      </div>
+
+                      {/* Replace / Remove buttons */}
+                      <div className="flex sm:flex-col gap-1.5 shrink-0">
+                        <label className="cursor-pointer inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors">
+                          {isUploadingImage ? <Loader2 className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
+                          <span className="hidden sm:inline">{isUploadingImage ? 'Uploading...' : 'Thlak'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={isUploadingImage}
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                setIsUploadingImage(true);
+                                const url = await uploadFile(file);
+                                if (url) setImage(url);
+                                setIsUploadingImage(false);
+                              }
+                            }}
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setImage('')}
+                          className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 text-xs font-semibold transition-colors"
+                          title="Paih rawh"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">Paih</span>
+                        </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center py-6 text-center">
-                      <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-accent mb-3">
-                        {isUploadingImage ? <Loader2 className="w-6 h-6 animate-spin" /> : <UploadCloud className="w-6 h-6" />}
-                      </div>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">
-                        {isUploadingImage ? 'Thlalak a upload mek e...' : 'Phone / Computer atangin Thlalak thlang rawh'}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4">
-                        JPG, PNG, WebP, GIF thlalak awlsam takin Cloudflare R2-ah a in-save nghal ang.
-                      </p>
-
-                      <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-slate-950 font-bold text-xs shadow-md hover:bg-accent-hover transition-colors">
-                        <UploadCloud className="w-4 h-4" />
-                        <span>Thlalak Upload Rawh</span>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                      <label className="cursor-pointer shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-accent text-slate-950 font-bold text-xs shadow-sm hover:bg-accent-hover transition-colors">
+                        {isUploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UploadCloud className="w-3.5 h-3.5" />}
+                        <span>{isUploadingImage ? 'Uploading...' : 'Thlalak Upload'}</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -723,15 +719,14 @@ export const AdminEditorPage: React.FC = () => {
                           }}
                         />
                       </label>
-
-                      <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/10 w-full max-w-md">
-                        <span className="text-[11px] text-slate-400 block mb-1.5">Emaw Image URL paste duh tan:</span>
+                      <span className="hidden sm:inline text-xs text-slate-400 font-medium px-1">or</span>
+                      <div className="relative flex-1 min-w-0">
                         <input
                           type="url"
                           value={image}
                           onChange={(e) => setImage(e.target.value)}
-                          placeholder="https://images.unsplash.com/..."
-                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-accent"
+                          placeholder="Paste image URL (https://...)"
+                          className="w-full px-3 py-2 rounded-lg bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-[#f0f6fc] placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:border-accent"
                         />
                       </div>
                     </div>

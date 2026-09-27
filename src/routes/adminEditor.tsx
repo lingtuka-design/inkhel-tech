@@ -19,12 +19,21 @@ import {
   ShoppingCart,
   CheckCircle2,
   Plus,
+  Loader2,
+  X,
+  Wand2,
 } from 'lucide-react';
 
 export const AdminEditorPage: React.FC = () => {
   const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { id?: string };
+  const search = useSearch({ strict: false }) as { id?: string; ai?: string };
   const editId = search.id;
+
+  useEffect(() => {
+    if (search.ai === 'true') {
+      setShowAiModal(true);
+    }
+  }, [search.ai]);
 
   const { posts, addPost, updatePost } = usePosts();
   const { categories, addCategory } = useCategories();
@@ -39,6 +48,78 @@ export const AdminEditorPage: React.FC = () => {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [categoryError, setCategoryError] = useState('');
+
+  // Gemini AI Auto-Generator State
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiRawText, setAiRawText] = useState('');
+  const [aiImageUrl, setAiImageUrl] = useState('');
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [aiSuccessToast, setAiSuccessToast] = useState(false);
+
+  const handleGenerateWithAi = async () => {
+    if (!aiRawText.trim()) return;
+    setIsAiGenerating(true);
+    setAiError('');
+
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: aiRawText }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to generate article');
+      }
+
+      const gen = data.data;
+
+      if (gen.title) setTitle(gen.title);
+      if (gen.slug) setSlug(gen.slug);
+      if (gen.category) {
+        setCategory(gen.category);
+        await addCategory(gen.category);
+      }
+      if (gen.excerpt) setExcerpt(gen.excerpt);
+      if (gen.content) setContent(gen.content);
+      if (gen.readTime) setReadTime(Number(gen.readTime) || 5);
+      if (gen.tags && Array.isArray(gen.tags)) {
+        setTags(gen.tags.join(', '));
+      }
+      if (aiImageUrl.trim()) {
+        setImage(aiImageUrl.trim());
+      }
+
+      // Specs
+      if (gen.specs) {
+        if (gen.specs.display) setSpecDisplay(gen.specs.display);
+        if (gen.specs.processor) setSpecProcessor(gen.specs.processor);
+        if (gen.specs.camera) setSpecCamera(gen.specs.camera);
+        if (gen.specs.battery) setSpecBattery(gen.specs.battery);
+        if (gen.specs.charging) setSpecCharging(gen.specs.charging);
+      }
+
+      // Pros & Cons
+      if (Array.isArray(gen.pros)) {
+        setProsText(gen.pros.join('\n'));
+      }
+      if (Array.isArray(gen.cons)) {
+        setConsText(gen.cons.join('\n'));
+      }
+
+      setShowAiModal(false);
+      setAiRawText('');
+      setAiImageUrl('');
+      setAiSuccessToast(true);
+      setTimeout(() => setAiSuccessToast(false), 4000);
+    } catch (err: any) {
+      setAiError(err.message || 'Error communicating with Gemini AI');
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
 
   // Form Fields
   const [title, setTitle] = useState('');
@@ -222,6 +303,21 @@ export const AdminEditorPage: React.FC = () => {
 
           {/* Right: Write / Preview Tab & Publish */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* AI Magic Studio Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setShowAiModal(true);
+                setAiError('');
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-blue-500/15 border border-emerald-500/30 hover:border-emerald-500 text-emerald-600 dark:text-emerald-400 font-bold text-xs shadow-sm transition-all active:scale-95"
+              title="Generate full Mizo article with Gemini AI"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" />
+              <span className="hidden sm:inline">AI Magic Studio</span>
+              <span className="sm:hidden">AI Auto</span>
+            </button>
+
             {/* View Mode Toggle */}
             <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs font-semibold">
               <button
@@ -749,6 +845,124 @@ export const AdminEditorPage: React.FC = () => {
           </div>
         )}
       </main>
+
+      {/* Toast Notification */}
+      {aiSuccessToast && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-emerald-600 text-white shadow-xl animate-in slide-in-from-bottom-3 duration-300">
+          <CheckCircle2 className="w-5 h-5 shrink-0" />
+          <div className="text-xs font-semibold">
+            <span>Mizo article chu mawi takin buatsaih fel a ni ta e! Endik la, publish rawh le.</span>
+          </div>
+        </div>
+      )}
+
+      {/* Gemini AI Auto-Generator Modal */}
+      {showAiModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-[#090d13]/70">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-accent">
+                  <Wand2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-[#f0f6fc] flex items-center gap-2">
+                    <span>AI Magic Studio (Gemini 3.8 Flash)</span>
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-[#8b949e] mt-0.5">
+                    English raw text, leak, news, emaw specs rawn dah la, Mizo thuziak puitlingah a chantir vek ang.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isAiGenerating) setShowAiModal(false);
+                }}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-5">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">
+                  English Raw Text / Press Release / Leak / Specs *
+                </label>
+                <textarea
+                  rows={9}
+                  value={aiRawText}
+                  onChange={(e) => setAiRawText(e.target.value)}
+                  disabled={isAiGenerating}
+                  placeholder="GSMArena, 91mobiles, Twitter, emaw khawi atang pawha i copy English text hetah rawn paste tawp rawh (e.g. phone thar tlangzarh tur, leak, specs, camera, battery, etc.)..."
+                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent font-sans leading-relaxed resize-y"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">
+                  Thlalak URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  value={aiImageUrl}
+                  onChange={(e) => setAiImageUrl(e.target.value)}
+                  disabled={isAiGenerating}
+                  placeholder="https://images.unsplash.com/... emaw /images/thlalak.jpg"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent font-mono"
+                />
+              </div>
+
+              {aiError && (
+                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-500 font-medium">
+                  {aiError}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 sm:p-5 bg-slate-50/80 dark:bg-[#090d13]/80 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span className="text-[11px] text-slate-400 order-2 sm:order-1">
+                ⚡ Powered by Google Gemini 3.8 Flash · Mizo Tech Engine
+              </span>
+
+              <div className="flex items-center gap-2.5 w-full sm:w-auto order-1 sm:order-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowAiModal(false)}
+                  disabled={isAiGenerating}
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGenerateWithAi}
+                  disabled={isAiGenerating || !aiRawText.trim()}
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg disabled:opacity-50 disabled:pointer-events-none transition-transform active:scale-95"
+                >
+                  {isAiGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Mizo-in a buatsaih mek e...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>✨ Generate Mizo Article</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

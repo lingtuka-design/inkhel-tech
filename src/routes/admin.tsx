@@ -18,6 +18,7 @@ import {
   Tag,
   X,
   Cloud,
+  Sparkles,
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
@@ -81,7 +82,18 @@ export const AdminPage: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-accent text-slate-950 font-bold text-xs sm:text-sm hover:bg-accent-hover transition-transform active:scale-95 shadow-md"
           >
             <Plus className="w-4 h-4" />
-            <span>New Article (Full Page)</span>
+            <span>New Article</span>
+          </Link>
+
+          {/* AI Magic Post Button */}
+          <Link
+            to="/admin/editor"
+            search={{ ai: 'true' }}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-blue-500/20 border border-emerald-500/40 hover:border-emerald-500 text-emerald-600 dark:text-emerald-400 font-bold text-xs sm:text-sm hover:scale-105 transition-all shadow-md active:scale-95"
+            title="Auto-generate article from English text using Gemini AI"
+          >
+            <Sparkles className="w-4 h-4 text-emerald-500 animate-pulse" />
+            <span>✨ AI Post (Gemini)</span>
           </Link>
 
           {/* Manage Categories Button */}

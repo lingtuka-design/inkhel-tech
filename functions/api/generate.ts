@@ -39,30 +39,37 @@ CRITICAL GUIDELINES:
    - Include an editorial highlight quote: <blockquote>"..."</blockquote>
    - Use <p>, <strong>, <em>, <ul>, <li> effectively for easy readability.
    - Conclude with a strong final editorial recommendation under <h2>Thutlukna (Verdict)</h2>.
-4. Extract structured Hardware Specifications:
-   - display: string (e.g. "6.78-inch AMOLED, 1.5K, 144Hz, 5000 nits")
-   - processor: string (e.g. "Qualcomm Snapdragon 8 Elite (3nm)")
-   - camera: string (e.g. "50MP Main OIS + 50MP Telephoto 3x + 8MP Ultrawide | 50MP Front")
-   - battery: string (e.g. "7,000mAh Massive Battery")
-   - charging: string (e.g. "90W FlashCharge Wired")
+4. Extract structured Hardware Specifications tailored directly to the device category:
+   Return an object of 4 to 6 defining hardware specifications for that specific product:
+   - For Phone: { "Display": "...", "Processor": "...", "Camera": "...", "Battery": "...", "Charging": "..." }
+   - For Laptop: { "Processor / CPU": "...", "RAM & Storage": "...", "Graphics / GPU": "...", "Display": "...", "Battery Life": "...", "Weight": "..." }
+   - For Tablet: { "Display": "...", "Processor": "...", "Stylus & Keyboard": "...", "Cameras": "...", "Battery": "..." }
+   - For Camera: { "Sensor": "...", "Video Resolution": "...", "ISO Range": "...", "Stabilization": "...", "Lens Mount": "..." }
+   - For Smartwatch: { "Display": "...", "Sensors & Health": "...", "Battery Life": "...", "Water Resistance": "..." }
+   - For Microphone: { "Polar Pattern": "...", "Frequency Response": "...", "Connectivity": "...", "Weight": "..." }
+   - For Earbuds/Audio: { "Driver Size": "...", "Noise Cancellation": "...", "Battery Life": "...", "Connectivity": "..." }
+   - For Other Gadgets: Extract the 4-6 most essential specs mentioned in the source.
 5. Provide 3-5 Pros (advantages) in Mizo.
 6. Provide 1-3 Cons (drawbacks, high price, missing charger, etc.) in Mizo.
-7. Return an appropriate Category name (e.g. "Smartphones", "Audio & Gadgets", "Buying Guides", or "Deals").
+7. Return an appropriate Category chosen strictly from this list:
+   - "Phone"
+   - "Laptop"
+   - "Tablet"
+   - "Camera"
+   - "Smartwatch"
+   - "Gadgets"
+   - "Tech News"
 8. Return 5-8 relevant lowercase tags.
 
 Return ONLY a valid JSON object matching this schema:
 {
   "title": "string",
   "slug": "string",
-  "category": "string",
+  "category": "Phone" | "Laptop" | "Tablet" | "Camera" | "Smartwatch" | "Gadgets" | "Tech News",
   "excerpt": "string",
   "content": "string (valid HTML)",
   "specs": {
-    "display": "string",
-    "processor": "string",
-    "camera": "string",
-    "battery": "string",
-    "charging": "string"
+    "Spec Name": "Spec Value"
   },
   "pros": ["string"],
   "cons": ["string"],

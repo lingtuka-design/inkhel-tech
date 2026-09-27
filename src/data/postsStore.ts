@@ -161,12 +161,15 @@ export function usePosts() {
   };
 }
 
-const CATEGORIES_STORAGE_KEY = 'inkhel_tech_categories_v1';
+const CATEGORIES_STORAGE_KEY = 'inkhel_tech_categories_v2';
 export const DEFAULT_CATEGORIES: string[] = [
-  'Smartphones',
-  'Audio & Gadgets',
-  'Buying Guides',
-  'Deals',
+  'Phone',
+  'Laptop',
+  'Tablet',
+  'Camera',
+  'Smartwatch',
+  'Gadgets',
+  'Tech News',
 ];
 
 export function getStoredCategories(): string[] {

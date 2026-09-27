@@ -5,7 +5,7 @@ interface Env {
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   try {
     const { results } = await context.env.DB.prepare(
-      'SELECT name FROM categories ORDER BY name ASC'
+      'SELECT name FROM categories ORDER BY rowid ASC'
     ).all();
 
     const categories = results.map((r: any) => r.name);

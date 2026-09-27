@@ -23,6 +23,13 @@ import {
   X,
   Wand2,
   UploadCloud,
+  Smartphone,
+  Laptop,
+  Tablet,
+  Camera,
+  Watch,
+  Mic,
+  Trash2,
 } from 'lucide-react';
 
 export const AdminEditorPage: React.FC = () => {
@@ -118,12 +125,15 @@ export const AdminEditorPage: React.FC = () => {
       }
 
       // Specs
-      if (gen.specs) {
-        if (gen.specs.display) setSpecDisplay(gen.specs.display);
-        if (gen.specs.processor) setSpecProcessor(gen.specs.processor);
-        if (gen.specs.camera) setSpecCamera(gen.specs.camera);
-        if (gen.specs.battery) setSpecBattery(gen.specs.battery);
-        if (gen.specs.charging) setSpecCharging(gen.specs.charging);
+      if (gen.specs && typeof gen.specs === 'object') {
+        const generatedRows = Object.entries(gen.specs).map(([k, v]) => ({
+          id: Math.random().toString(36).substring(2, 9),
+          key: k,
+          value: String(v || ''),
+        }));
+        if (generatedRows.length > 0) {
+          setSpecRows(generatedRows);
+        }
       }
 
       // Pros & Cons
@@ -149,7 +159,7 @@ export const AdminEditorPage: React.FC = () => {
   // Form Fields
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
-  const [category, setCategory] = useState<string>('Smartphones');
+  const [category, setCategory] = useState<string>('Phone');
   const [author, setAuthor] = useState('iTECH Editorial');
   const [publishedAt, setPublishedAt] = useState('');
   const [readTime, setReadTime] = useState(5);
@@ -158,12 +168,60 @@ export const AdminEditorPage: React.FC = () => {
   const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
 
-  // Specs
-  const [specDisplay, setSpecDisplay] = useState('');
-  const [specProcessor, setSpecProcessor] = useState('');
-  const [specCamera, setSpecCamera] = useState('');
-  const [specBattery, setSpecBattery] = useState('');
-  const [specCharging, setSpecCharging] = useState('');
+  // Dynamic Specs Rows
+  interface SpecRow {
+    id: string;
+    key: string;
+    value: string;
+  }
+
+  const [specRows, setSpecRows] = useState<SpecRow[]>([
+    { id: '1', key: 'Display', value: '' },
+    { id: '2', key: 'Processor', value: '' },
+    { id: '3', key: 'Camera', value: '' },
+    { id: '4', key: 'Battery', value: '' },
+    { id: '5', key: 'Charging', value: '' },
+  ]);
+
+  const applySpecPreset = (presetType: 'phone' | 'laptop' | 'tablet' | 'camera' | 'smartwatch' | 'mic' | 'clear') => {
+    if (presetType === 'clear') {
+      setSpecRows([]);
+      return;
+    }
+    const presets: Record<string, string[]> = {
+      phone: ['Display', 'Processor', 'Camera', 'Battery', 'Charging'],
+      laptop: ['Processor / CPU', 'RAM & Storage', 'Graphics / GPU', 'Display', 'Battery Life', 'Weight & Ports'],
+      tablet: ['Display & Screen', 'Processor / Chip', 'Stylus Support', 'Cameras', 'Battery Life'],
+      camera: ['Sensor & Megapixels', 'Video Recording', 'Lens Mount', 'ISO Range', 'Stabilization (IBIS)'],
+      smartwatch: ['Display', 'Health & Sensors', 'Battery Life', 'Water Resistance', 'Connectivity'],
+      mic: ['Polar Pattern', 'Frequency Response', 'Connectivity / Output', 'Sensitivity'],
+    };
+    const keys = presets[presetType] || [];
+    setSpecRows(
+      keys.map((k) => ({
+        id: Math.random().toString(36).substring(2, 9),
+        key: k,
+        value: '',
+      }))
+    );
+  };
+
+  const addSpecRow = () => {
+    setSpecRows((prev) => [
+      ...prev,
+      { id: Math.random().toString(36).substring(2, 9), key: '', value: '' },
+    ]);
+  };
+
+  const updateSpecRow = (id: string, field: 'key' | 'value', val: string) => {
+    setSpecRows((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, [field]: val } : r))
+    );
+  };
+
+  const removeSpecRow = (id: string) => {
+    setSpecRows((prev) => prev.filter((r) => r.id !== id));
+  };
 
   // Affiliate
   const [amazonUrl, setAmazonUrl] = useState('');
@@ -188,11 +246,16 @@ export const AdminEditorPage: React.FC = () => {
         setExcerpt(existing.excerpt);
         setTags(existing.tags ? existing.tags.join(', ') : '');
         setContent(existing.content);
-        setSpecDisplay(existing.specs?.display || '');
-        setSpecProcessor(existing.specs?.processor || '');
-        setSpecCamera(existing.specs?.camera || '');
-        setSpecBattery(existing.specs?.battery || '');
-        setSpecCharging(existing.specs?.charging || '');
+        if (existing.specs && typeof existing.specs === 'object') {
+          const loadedRows = Object.entries(existing.specs).map(([k, v]) => ({
+            id: Math.random().toString(36).substring(2, 9),
+            key: k,
+            value: String(v || ''),
+          }));
+          setSpecRows(loadedRows);
+        } else {
+          setSpecRows([]);
+        }
         setAmazonUrl(existing.affiliateLinks?.amazon || '');
         setFlipkartUrl(existing.affiliateLinks?.flipkart || '');
         setProsText(existing.pros ? existing.pros.join('\n') : '');
@@ -228,6 +291,13 @@ export const AdminEditorPage: React.FC = () => {
     const tagList = tags.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
     const finalSlug = slug.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+    const compiledSpecs: Record<string, string> = {};
+    specRows.forEach((r) => {
+      if (r.key.trim() && r.value.trim()) {
+        compiledSpecs[r.key.trim()] = r.value.trim();
+      }
+    });
+
     const postData: Post = {
       id: editId || Date.now().toString(),
       slug: finalSlug,
@@ -240,13 +310,7 @@ export const AdminEditorPage: React.FC = () => {
       image,
       content,
       tags: tagList,
-      specs: {
-        ...(specDisplay && { display: specDisplay }),
-        ...(specProcessor && { processor: specProcessor }),
-        ...(specCamera && { camera: specCamera }),
-        ...(specBattery && { battery: specBattery }),
-        ...(specCharging && { charging: specCharging }),
-      },
+      specs: Object.keys(compiledSpecs).length > 0 ? compiledSpecs : undefined,
       pros: pros.length > 0 ? pros : undefined,
       cons: cons.length > 0 ? cons : undefined,
       affiliateLinks: {
@@ -271,6 +335,13 @@ export const AdminEditorPage: React.FC = () => {
   const wordCount = content.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   const estimatedReadTime = Math.max(1, Math.ceil(wordCount / 200));
 
+  const compiledPreviewSpecs: Record<string, string> = {};
+  specRows.forEach((r) => {
+    if (r.key.trim() && r.value.trim()) {
+      compiledPreviewSpecs[r.key.trim()] = r.value.trim();
+    }
+  });
+
   const previewPost: Post = {
     id: editId || 'preview',
     slug: slug || 'preview-slug',
@@ -283,13 +354,7 @@ export const AdminEditorPage: React.FC = () => {
     image,
     content,
     tags: tags.split(',').map((s) => s.trim()).filter(Boolean),
-    specs: {
-      ...(specDisplay && { display: specDisplay }),
-      ...(specProcessor && { processor: specProcessor }),
-      ...(specCamera && { camera: specCamera }),
-      ...(specBattery && { battery: specBattery }),
-      ...(specCharging && { charging: specCharging }),
-    },
+    specs: compiledPreviewSpecs,
     pros: prosText.split('\n').map((s) => s.trim()).filter(Boolean),
     cons: consText.split('\n').map((s) => s.trim()).filter(Boolean),
     affiliateLinks: {
@@ -693,77 +758,125 @@ export const AdminEditorPage: React.FC = () => {
               
               {/* Quick Specs */}
               <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 shadow-sm space-y-4">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent">
-                  <span className="w-2 h-2 rounded-full bg-accent"></span>
-                  <span>Hardware Specifications (Optional)</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent">
+                    <span className="w-2 h-2 rounded-full bg-accent"></span>
+                    <span>Hardware Specifications</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-normal">
+                    {specRows.length} {specRows.length === 1 ? 'spec' : 'specs'}
+                  </span>
                 </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-500 dark:text-[#8b949e] mb-1">
-                      Display
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 6.8-inch Dynamic AMOLED 2X, 120Hz LTPO"
-                      value={specDisplay}
-                      onChange={(e) => setSpecDisplay(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-white"
-                    />
+                {/* Preset Templates Selector */}
+                <div className="space-y-1.5 pt-0.5">
+                  <span className="text-[11px] font-semibold text-slate-400 block">
+                    Quick Presets (Thlang mai rawh):
+                  </span>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => applySpecPreset('phone')}
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1"
+                    >
+                      <Smartphone className="w-3 h-3 text-accent" />
+                      <span>Phone</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applySpecPreset('laptop')}
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1"
+                    >
+                      <Laptop className="w-3 h-3 text-accent" />
+                      <span>Laptop</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applySpecPreset('tablet')}
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1"
+                    >
+                      <Tablet className="w-3 h-3 text-accent" />
+                      <span>Tablet</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applySpecPreset('camera')}
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1"
+                    >
+                      <Camera className="w-3 h-3 text-accent" />
+                      <span>Camera</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applySpecPreset('smartwatch')}
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1"
+                    >
+                      <Watch className="w-3 h-3 text-accent" />
+                      <span>Watch</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applySpecPreset('mic')}
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1"
+                    >
+                      <Mic className="w-3 h-3 text-accent" />
+                      <span>Mic / Audio</span>
+                    </button>
+                    {specRows.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => applySpecPreset('clear')}
+                        className="px-2 py-1 rounded-lg text-[11px] font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors ml-auto"
+                      >
+                        Paih fai
+                      </button>
+                    )}
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-500 dark:text-[#8b949e] mb-1">
-                      Processor / SoC
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Qualcomm Snapdragon 8 Elite (3nm)"
-                      value={specProcessor}
-                      onChange={(e) => setSpecProcessor(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-500 dark:text-[#8b949e] mb-1">
-                      Camera Setup
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 200MP Main OIS + 50MP 5x Periscope"
-                      value={specCamera}
-                      onChange={(e) => setSpecCamera(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-white"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-500 dark:text-[#8b949e] mb-1">
-                        Battery
-                      </label>
+                {/* Dynamic Spec Rows List */}
+                <div className="space-y-2 pt-1 max-h-[360px] overflow-y-auto pr-1">
+                  {specRows.map((row) => (
+                    <div key={row.id} className="flex items-center gap-2">
                       <input
                         type="text"
-                        placeholder="e.g. 5,200mAh"
-                        value={specBattery}
-                        onChange={(e) => setSpecBattery(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-white"
+                        placeholder="Spec Name (e.g. CPU)"
+                        value={row.key}
+                        onChange={(e) => updateSpecRow(row.id, 'key', e.target.value)}
+                        className="w-2/5 px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-accent"
                       />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-500 dark:text-[#8b949e] mb-1">
-                        Charging
-                      </label>
                       <input
                         type="text"
-                        placeholder="e.g. 65W Wired, 15W Wireless"
-                        value={specCharging}
-                        onChange={(e) => setSpecCharging(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-white"
+                        placeholder="Value (e.g. Intel Core Ultra 7)"
+                        value={row.value}
+                        onChange={(e) => updateSpecRow(row.id, 'value', e.target.value)}
+                        className="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-accent"
                       />
+                      <button
+                        type="button"
+                        onClick={() => removeSpecRow(row.id)}
+                        className="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors shrink-0"
+                        title="Delete Spec"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
-                  </div>
+                  ))}
+
+                  {specRows.length === 0 && (
+                    <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-white/10 text-center text-xs text-slate-400">
+                      Spec a la awm lo. A chunga preset khian thlang la, emaw a hnuaiah hian i duh duh type belh rawh.
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={addSpecRow}
+                    className="w-full py-2.5 rounded-xl border border-dashed border-slate-300 dark:border-white/15 hover:border-accent text-slate-600 dark:text-slate-300 hover:text-accent text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Spec Row Belh Rawh (+ Add Spec)</span>
+                  </button>
                 </div>
               </div>
 

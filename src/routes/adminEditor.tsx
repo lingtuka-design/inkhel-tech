@@ -22,6 +22,7 @@ import {
   Loader2,
   X,
   Wand2,
+  UploadCloud,
 } from 'lucide-react';
 
 export const AdminEditorPage: React.FC = () => {
@@ -56,6 +57,30 @@ export const AdminEditorPage: React.FC = () => {
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [aiError, setAiError] = useState('');
   const [aiSuccessToast, setAiSuccessToast] = useState(false);
+
+  // Image Upload State
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isUploadingAiImage, setIsUploadingAiImage] = useState(false);
+
+  const uploadFile = async (file: File): Promise<string | null> => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        alert(data.error || 'Failed to upload image');
+        return null;
+      }
+      return data.url;
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message);
+      return null;
+    }
+  };
 
   const handleGenerateWithAi = async () => {
     if (!aiRawText.trim()) return;
@@ -544,24 +569,106 @@ export const AdminEditorPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Image URL & Live Thumbnail Preview */}
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 dark:text-[#8b949e] mb-1.5 flex items-center justify-between">
-                  <span>Featured Image URL *</span>
+              {/* Featured Image Upload & URL */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase text-slate-500 dark:text-[#8b949e]">
+                    Featured Image *
+                  </label>
                   <span className="text-[11px] font-normal text-slate-400">High-resolution banner (16:9 ratio)</span>
-                </label>
-                <div className="flex flex-col sm:flex-row gap-4 items-start">
-                  <input
-                    type="url"
-                    required
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="flex-1 w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-[#f0f6fc] text-sm font-mono focus:outline-none focus:border-accent"
-                  />
-                  {image && (
-                    <div className="w-24 h-14 rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 shrink-0">
-                      <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+
+                <div className="p-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 bg-slate-50/60 dark:bg-[#090d13]/60 hover:border-accent/60 transition-colors">
+                  {image ? (
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                      <div className="relative w-full sm:w-52 aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#161b22] shrink-0 shadow-sm">
+                        <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 w-full space-y-2.5">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 className="w-4 h-4 shrink-0" />
+                          <span>Thlalak thlan fel a ni e</span>
+                        </div>
+                        <input
+                          type="text"
+                          value={image}
+                          onChange={(e) => setImage(e.target.value)}
+                          placeholder="Image URL"
+                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 focus:outline-none focus:border-accent"
+                        />
+                        <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                          <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors">
+                            {isUploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UploadCloud className="w-3.5 h-3.5" />}
+                            <span>{isUploadingImage ? 'Uploading...' : 'Thlalak dang thlak rawh'}</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              disabled={isUploadingImage}
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  setIsUploadingImage(true);
+                                  const url = await uploadFile(file);
+                                  if (url) setImage(url);
+                                  setIsUploadingImage(false);
+                                }
+                              }}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setImage('')}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 text-xs font-semibold transition-colors"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                            <span>Paih rawh</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-6 text-center">
+                      <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-accent mb-3">
+                        {isUploadingImage ? <Loader2 className="w-6 h-6 animate-spin" /> : <UploadCloud className="w-6 h-6" />}
+                      </div>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        {isUploadingImage ? 'Thlalak a upload mek e...' : 'Phone / Computer atangin Thlalak thlang rawh'}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4">
+                        JPG, PNG, WebP, GIF thlalak awlsam takin Cloudflare R2-ah a in-save nghal ang.
+                      </p>
+
+                      <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-slate-950 font-bold text-xs shadow-md hover:bg-accent-hover transition-colors">
+                        <UploadCloud className="w-4 h-4" />
+                        <span>Thlalak Upload Rawh</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          disabled={isUploadingImage}
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setIsUploadingImage(true);
+                              const url = await uploadFile(file);
+                              if (url) setImage(url);
+                              setIsUploadingImage(false);
+                            }
+                          }}
+                        />
+                      </label>
+
+                      <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/10 w-full max-w-md">
+                        <span className="text-[11px] text-slate-400 block mb-1.5">Emaw Image URL paste duh tan:</span>
+                        <input
+                          type="url"
+                          value={image}
+                          onChange={(e) => setImage(e.target.value)}
+                          placeholder="https://images.unsplash.com/..."
+                          className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-white/10 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-accent"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -905,17 +1012,66 @@ export const AdminEditorPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">
-                  Thlalak URL (Optional)
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2 flex items-center justify-between">
+                  <span>Thlalak / Banner (Optional)</span>
+                  <span className="text-[11px] font-normal text-slate-400">Phone / PC atangin upload rawh</span>
                 </label>
-                <input
-                  type="url"
-                  value={aiImageUrl}
-                  onChange={(e) => setAiImageUrl(e.target.value)}
-                  disabled={isAiGenerating}
-                  placeholder="https://images.unsplash.com/... emaw /images/thlalak.jpg"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent font-mono"
-                />
+
+                {aiImageUrl ? (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10">
+                    <img src={aiImageUrl} alt="AI Banner" className="w-16 h-12 object-cover rounded-lg border border-slate-200 dark:border-white/10 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-mono text-slate-700 dark:text-slate-300 truncate">{aiImageUrl}</p>
+                      <p className="text-[11px] text-emerald-500 font-medium mt-0.5">✓ Thlalak pek fel a ni e</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setAiImageUrl('')}
+                      className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 text-xs transition-colors shrink-0"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <label className="cursor-pointer flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-slate-300 dark:border-white/20 bg-slate-50/70 dark:bg-[#090d13]/70 hover:border-accent hover:bg-emerald-500/5 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all">
+                      {isUploadingAiImage ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-accent" />
+                          <span>Thlalak a upload mek e...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud className="w-4 h-4 text-accent" />
+                          <span>📷 Thlalak Upload Rawh (Phone / PC)</span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={isUploadingAiImage || isAiGenerating}
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setIsUploadingAiImage(true);
+                            const url = await uploadFile(file);
+                            if (url) setAiImageUrl(url);
+                            setIsUploadingAiImage(false);
+                          }
+                        }}
+                      />
+                    </label>
+                    <input
+                      type="url"
+                      value={aiImageUrl}
+                      onChange={(e) => setAiImageUrl(e.target.value)}
+                      disabled={isAiGenerating}
+                      placeholder="Emaw image URL paste rawh: https://..."
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent font-mono"
+                    />
+                  </div>
+                )}
               </div>
 
               {aiError && (

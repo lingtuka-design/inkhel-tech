@@ -28,6 +28,7 @@ export interface Post {
 
   pros?: string[];
   cons?: string[];
+  featured?: boolean;
 }
 
 export const CATEGORIES = [

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
 import {
   Bold,
   Italic,
@@ -19,6 +20,9 @@ import {
   Redo2,
   Code2,
   Type,
+  ImagePlus,
+  Image as ImageIcon,
+  Loader2,
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -28,6 +32,8 @@ interface RichTextEditorProps {
 
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange }) => {
   const [showRawHtml, setShowRawHtml] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -42,6 +48,13 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChang
           },
         },
       }),
+      Image.configure({
+        inline: false,
+        allowBase64: false,
+        HTMLAttributes: {
+          class: 'rounded-xl max-w-full my-6 border border-slate-200 dark:border-white/10 shadow-sm mx-auto block',
+        },
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -54,6 +67,43 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChang
       },
     },
   });
+
+  // Upload image from user's device directly into editor content
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editor) return;
+
+    setIsUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        alert(data.error || 'Failed to upload image');
+        return;
+      }
+      editor.chain().focus().setImage({ src: data.url, alt: file.name.replace(/\.[^/.]+$/, '') }).run();
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message);
+    } finally {
+      setIsUploadingImage(false);
+      if (imageInputRef.current) {
+        imageInputRef.current.value = '';
+      }
+    }
+  };
+
+  // Insert image via URL
+  const handleInsertImageUrl = () => {
+    if (!editor) return;
+    const url = window.prompt('Thlalak link (URL) dah rawh:');
+    if (!url || !url.trim()) return;
+    editor.chain().focus().setImage({ src: url.trim() }).run();
+  };
 
   // Keep editor content in sync if changed from outside (e.g. loading post)
   React.useEffect(() => {
@@ -275,6 +325,41 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChang
             title="Inline Code"
           >
             <Code className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Media / Pictures in Content */}
+        <div className="flex items-center gap-1 px-2 border-r border-slate-200 dark:border-white/10">
+          <label
+            className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200/70 dark:hover:bg-white/[0.06] cursor-pointer flex items-center gap-1.5 transition-colors group"
+            title="Content karah thlalak zeh rawh (Upload picture from phone/PC)"
+          >
+            {isUploadingImage ? (
+              <Loader2 className="w-4 h-4 animate-spin text-accent" />
+            ) : (
+              <ImagePlus className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+            )}
+            <span className="text-xs font-semibold hidden sm:inline">
+              {isUploadingImage ? 'Uploading...' : 'Picture Zeh'}
+            </span>
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              disabled={isUploadingImage}
+              className="hidden"
+              onChange={handleImageUpload}
+            />
+          </label>
+
+          <button
+            type="button"
+            onClick={handleInsertImageUrl}
+            className="p-1.5 sm:px-2 sm:py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-white/[0.06] flex items-center gap-1 text-xs font-semibold transition-colors"
+            title="Thlalak URL hmanga zeh duh tan"
+          >
+            <ImageIcon className="w-4 h-4 text-slate-500" />
+            <span className="hidden sm:inline">URL</span>
           </button>
         </div>
 

@@ -19,6 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       readTime: Number(row.read_time) || 5,
       image: row.image,
       content: row.content,
+      featured: Boolean(row.is_featured),
       tags: row.tags ? JSON.parse(row.tags) : [],
       specs: row.specs ? JSON.parse(row.specs) : {},
       pros: row.pros ? JSON.parse(row.pros) : undefined,
@@ -57,11 +58,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const prosJson = JSON.stringify(post.pros || []);
     const consJson = JSON.stringify(post.cons || []);
     const affJson = JSON.stringify(post.affiliateLinks || {});
+    const isFeatured = post.featured ? 1 : 0;
 
     await context.env.DB.prepare(`
       INSERT INTO posts (
-        id, slug, title, excerpt, category, author, published_at, read_time, image, content, tags, specs, pros, cons, affiliate_links, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+        id, slug, title, excerpt, category, author, published_at, read_time, image, content, tags, specs, pros, cons, affiliate_links, is_featured, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
       ON CONFLICT(id) DO UPDATE SET
         slug = excluded.slug,
         title = excluded.title,
@@ -77,13 +79,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         pros = excluded.pros,
         cons = excluded.cons,
         affiliate_links = excluded.affiliate_links,
+        is_featured = excluded.is_featured,
         updated_at = datetime('now')
     `).bind(
       id,
       post.slug,
       post.title,
       post.excerpt || '',
-      post.category || 'Smartphones',
+      post.category || 'Phone',
       post.author || 'iTECH Editorial',
       post.publishedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       Number(post.readTime) || 5,
@@ -93,7 +96,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       specsJson,
       prosJson,
       consJson,
-      affJson
+      affJson,
+      isFeatured
     ).run();
 
     return new Response(JSON.stringify({ success: true, id }), {

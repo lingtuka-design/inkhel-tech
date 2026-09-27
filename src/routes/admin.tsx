@@ -294,13 +294,20 @@ export const AdminPage: React.FC = () => {
                         className="w-14 h-10 object-cover rounded-lg bg-slate-100 dark:bg-[#21262d] shrink-0 border border-slate-200 dark:border-white/5"
                       />
                       <div className="min-w-0">
-                        <Link
-                          to="/admin/editor"
-                          search={{ id: p.id }}
-                          className="font-bold text-slate-900 dark:text-[#f0f6fc] hover:text-accent line-clamp-1 block transition-colors"
-                        >
-                          {p.title}
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link
+                            to="/admin/editor"
+                            search={{ id: p.id }}
+                            className="font-bold text-slate-900 dark:text-[#f0f6fc] hover:text-accent line-clamp-1 transition-colors"
+                          >
+                            {p.title}
+                          </Link>
+                          {p.featured && (
+                            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[10px] font-extrabold uppercase">
+                              ★ Featured
+                            </span>
+                          )}
+                        </div>
                         <span className="text-[11px] font-mono text-slate-400 dark:text-[#8b949e] block">
                           /post/{p.slug}
                         </span>

@@ -28,16 +28,19 @@ export const HomePage: React.FC = () => {
     return filterPosts(posts, searchQuery, selectedCategory);
   }, [posts, searchQuery, selectedCategory]);
 
-  const featured = posts[0];
+  const featured = useMemo(() => {
+    return posts.find((p) => p.featured) || posts[0];
+  }, [posts]);
+
   const isFiltering = searchQuery.trim() !== '' || selectedCategory !== 'All';
 
-  // For the chronological list, if we are on the default unfiltered view, we can feature the first post and list the rest
+  // For the chronological list, if we are on the default unfiltered view, feature the selected post and list the rest
   const listPosts = useMemo(() => {
     if (!isFiltering) {
-      return posts.slice(1);
+      return posts.filter((p) => p.id !== featured?.id);
     }
     return filteredPosts;
-  }, [isFiltering, posts, filteredPosts]);
+  }, [isFiltering, posts, featured, filteredPosts]);
 
   const handleResetFilters = () => {
     setSelectedCategory('All');

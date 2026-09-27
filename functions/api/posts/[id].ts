@@ -13,6 +13,8 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
     const consJson = JSON.stringify(post.cons || []);
     const affJson = JSON.stringify(post.affiliateLinks || {});
 
+    const isFeatured = post.featured ? 1 : 0;
+
     await context.env.DB.prepare(`
       UPDATE posts SET
         slug = ?,
@@ -29,13 +31,14 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
         pros = ?,
         cons = ?,
         affiliate_links = ?,
+        is_featured = ?,
         updated_at = datetime('now')
       WHERE id = ?
     `).bind(
       post.slug,
       post.title,
       post.excerpt || '',
-      post.category || 'Smartphones',
+      post.category || 'Phone',
       post.author || 'iTECH Editorial',
       post.publishedAt,
       Number(post.readTime) || 5,
@@ -46,6 +49,7 @@ export const onRequestPut: PagesFunction<Env> = async (context) => {
       prosJson,
       consJson,
       affJson,
+      isFeatured,
       id
     ).run();
 

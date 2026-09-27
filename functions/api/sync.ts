@@ -34,11 +34,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           const consJson = JSON.stringify(post.cons || []);
           const affJson = JSON.stringify(post.affiliateLinks || {});
 
+          const isFeatured = post.featured ? 1 : 0;
+
           statements.push(
             context.env.DB.prepare(`
               INSERT INTO posts (
-                id, slug, title, excerpt, category, author, published_at, read_time, image, content, tags, specs, pros, cons, affiliate_links, updated_at
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+                id, slug, title, excerpt, category, author, published_at, read_time, image, content, tags, specs, pros, cons, affiliate_links, is_featured, updated_at
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
               ON CONFLICT(id) DO UPDATE SET
                 slug = excluded.slug,
                 title = excluded.title,
@@ -54,13 +56,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
                 pros = excluded.pros,
                 cons = excluded.cons,
                 affiliate_links = excluded.affiliate_links,
+                is_featured = excluded.is_featured,
                 updated_at = datetime('now')
             `).bind(
               post.id,
               post.slug,
               post.title,
               post.excerpt || '',
-              post.category || 'Smartphones',
+              post.category || 'Phone',
               post.author || 'iTECH Editorial',
               post.publishedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
               Number(post.readTime) || 5,
@@ -70,7 +73,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
               specsJson,
               prosJson,
               consJson,
-              affJson
+              affJson,
+              isFeatured
             )
           );
         }

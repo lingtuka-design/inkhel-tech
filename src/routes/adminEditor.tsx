@@ -30,6 +30,7 @@ import {
   Watch,
   Mic,
   Trash2,
+  Star,
 } from 'lucide-react';
 
 export const AdminEditorPage: React.FC = () => {
@@ -167,6 +168,7 @@ export const AdminEditorPage: React.FC = () => {
   const [excerpt, setExcerpt] = useState('');
   const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
+  const [isFeatured, setIsFeatured] = useState<boolean>(false);
 
   // Dynamic Specs Rows
   interface SpecRow {
@@ -260,6 +262,7 @@ export const AdminEditorPage: React.FC = () => {
         setFlipkartUrl(existing.affiliateLinks?.flipkart || '');
         setProsText(existing.pros ? existing.pros.join('\n') : '');
         setConsText(existing.cons ? existing.cons.join('\n') : '');
+        setIsFeatured(Boolean(existing.featured));
         return;
       }
     }
@@ -270,6 +273,7 @@ export const AdminEditorPage: React.FC = () => {
     setProsText('');
     setConsText('');
     setContent('');
+    setIsFeatured(false);
   }, [editId, posts]);
 
   // Authentication Gate
@@ -313,6 +317,7 @@ export const AdminEditorPage: React.FC = () => {
       specs: Object.keys(compiledSpecs).length > 0 ? compiledSpecs : undefined,
       pros: pros.length > 0 ? pros : undefined,
       cons: cons.length > 0 ? cons : undefined,
+      featured: isFeatured,
       affiliateLinks: {
         ...(amazonUrl && { amazon: amazonUrl }),
         ...(flipkartUrl && { flipkart: flipkartUrl }),
@@ -353,6 +358,7 @@ export const AdminEditorPage: React.FC = () => {
     readTime: Number(readTime) || estimatedReadTime,
     image,
     content,
+    featured: isFeatured,
     tags: tags.split(',').map((s) => s.trim()).filter(Boolean),
     specs: compiledPreviewSpecs,
     pros: prosText.split('\n').map((s) => s.trim()).filter(Boolean),
@@ -632,6 +638,38 @@ export const AdminEditorPage: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-[#f0f6fc] text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
+              </div>
+
+              {/* Feature This Post Tick-box */}
+              <div className="pt-1">
+                <label className={`flex items-start sm:items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none ${
+                  isFeatured
+                    ? 'border-amber-500/40 bg-amber-500/10 dark:bg-amber-500/[0.08]'
+                    : 'border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#090d13]/50 hover:border-amber-500/30'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={isFeatured}
+                    onChange={(e) => setIsFeatured(e.target.checked)}
+                    className="w-5 h-5 mt-0.5 sm:mt-0 rounded text-amber-500 accent-amber-500 focus:ring-0 cursor-pointer shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                      <Star className={`w-4 h-4 ${isFeatured ? 'fill-amber-500 text-amber-500' : 'text-slate-400'}`} />
+                      <span className={isFeatured ? 'text-amber-600 dark:text-amber-400' : ''}>
+                        Feature This Story (Featured Post / Hero Story)
+                      </span>
+                      {isFeatured && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-slate-950 uppercase ml-1">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-[#8b949e] mt-0.5 leading-normal">
+                      Tick rawh le: He thuziak hi Homepage chung bera chanchin langsar ber (Top Hero Story)-ah a lang nghal ang.
+                    </p>
+                  </div>
+                </label>
               </div>
 
               {/* Featured Image Upload & URL */}

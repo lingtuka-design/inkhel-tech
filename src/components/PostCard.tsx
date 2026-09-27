@@ -23,10 +23,15 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
             loading="lazy"
             className="w-full h-full object-cover transform group-hover:scale-[1.02] transition-transform duration-500 ease-out"
           />
-          <div className="absolute top-2.5 left-2.5 sm:hidden">
+          <div className="absolute top-2.5 left-2.5 sm:hidden flex items-center gap-1.5">
             <span className="px-2.5 py-0.5 bg-white/95 dark:bg-[#0d1117]/90 text-accent text-[11px] font-semibold uppercase tracking-wider rounded border border-accent/20 shadow-sm">
               {post.category}
             </span>
+            {post.featured && (
+              <span className="px-2 py-0.5 bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase rounded shadow-sm">
+                ★ Featured
+              </span>
+            )}
           </div>
         </div>
 
@@ -37,6 +42,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
               <span className="text-[11px] font-bold uppercase tracking-wider text-accent">
                 {post.category}
               </span>
+              {post.featured && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[10px] font-extrabold uppercase">
+                  ★ Featured
+                </span>
+              )}
             </div>
 
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-[#f0f6fc] group-hover:text-accent transition-colors duration-150 leading-snug tracking-tight mb-2">

@@ -23,10 +23,15 @@ export const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
             loading="eager"
             className="w-full h-full object-cover transform group-hover:scale-[1.02] transition-transform duration-500 ease-out"
           />
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 flex items-center gap-2">
             <span className="inline-block px-3 py-1 bg-white/95 dark:bg-[#0d1117]/90 backdrop-blur-md text-accent text-xs font-bold uppercase tracking-wider rounded-md border border-accent/25 shadow-sm">
               {post.category}
             </span>
+            {post.featured && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500 text-slate-950 text-xs font-extrabold uppercase tracking-wider rounded-md shadow-md">
+                ★ Featured
+              </span>
+            )}
           </div>
         </div>
 

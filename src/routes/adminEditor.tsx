@@ -356,10 +356,10 @@ export const AdminEditorPage: React.FC = () => {
                           }}
                           placeholder="New category..."
                           className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#090d13] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-[#f0f6fc] focus:outline-none focus:border-accent"
-                          onKeyDown={(e) => {
+                          onKeyDown={async (e) => {
                             if (e.key === 'Enter') {
                               e.preventDefault();
-                              const res = addCategory(newCategoryName);
+                              const res = await addCategory(newCategoryName);
                               if (res.success) {
                                 setCategory(newCategoryName.trim());
                                 setNewCategoryName('');
@@ -373,8 +373,8 @@ export const AdminEditorPage: React.FC = () => {
                         />
                         <button
                           type="button"
-                          onClick={() => {
-                            const res = addCategory(newCategoryName);
+                          onClick={async () => {
+                            const res = await addCategory(newCategoryName);
                             if (res.success) {
                               setCategory(newCategoryName.trim());
                               setNewCategoryName('');

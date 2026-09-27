@@ -17,16 +17,25 @@ import {
   User,
   Tag,
   X,
+  Cloud,
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
-  const { posts, deletePost, resetToDefault } = usePosts();
+  const { posts, deletePost, resetToDefault, triggerFullSync, isSyncing } = usePosts();
   const { categories, addCategory, deleteCategory, resetCategories } = useCategories();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => checkIsAuthenticated());
   const [copiedCode, setCopiedCode] = useState(false);
+  const [syncSuccess, setSyncSuccess] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [newCategoryInput, setNewCategoryInput] = useState('');
   const [categoryError, setCategoryError] = useState('');
+
+  // Auto-sync any existing local post edits to Cloudflare D1
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      triggerFullSync();
+    }
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     logoutAdmin();
@@ -89,6 +98,27 @@ export const AdminPage: React.FC = () => {
             <span>Categories ({categories.length})</span>
           </button>
 
+          {/* Sync to Cloud Button */}
+          <button
+            onClick={async () => {
+              const ok = await triggerFullSync();
+              if (ok) {
+                setSyncSuccess(true);
+                setTimeout(() => setSyncSuccess(false), 2500);
+              }
+            }}
+            disabled={isSyncing}
+            title="Sync all articles directly to Cloudflare D1 Database"
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition-colors shadow-sm ${
+              syncSuccess
+                ? 'bg-emerald-500/15 border-emerald-500 text-emerald-600 dark:text-emerald-400'
+                : 'bg-white dark:bg-[#161b22] hover:bg-slate-50 dark:hover:bg-white/[0.06] text-slate-700 dark:text-[#c9d1d9] border-slate-200 dark:border-white/10'
+            }`}
+          >
+            <Cloud className={`w-4 h-4 ${isSyncing ? 'animate-pulse text-accent' : syncSuccess ? 'text-emerald-500' : 'text-blue-500'}`} />
+            <span>{isSyncing ? 'Syncing...' : syncSuccess ? 'Synced to Cloud!' : 'Sync to Cloud'}</span>
+          </button>
+
           <button
             onClick={handleExportPosts}
             title="Copy all posts as TypeScript code"
@@ -137,9 +167,9 @@ export const AdminPage: React.FC = () => {
 
           {/* Add Category Form */}
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              const res = addCategory(newCategoryInput);
+              const res = await addCategory(newCategoryInput);
               if (res.success) {
                 setNewCategoryInput('');
                 setCategoryError('');

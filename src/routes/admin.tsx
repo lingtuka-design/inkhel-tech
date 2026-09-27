@@ -366,9 +366,9 @@ export const AdminPage: React.FC = () => {
                       </Link>
 
                       <button
-                        onClick={() => {
-                          if (confirm(`Are you sure you want to delete "${p.title}"?`)) {
-                            deletePost(p.id);
+                        onClick={async () => {
+                          if (confirm(`He thuziak "${p.title}" hi paih (delete) hlen i duh takzet em?`)) {
+                            await deletePost(p.id);
                           }
                         }}
                         className="p-2 rounded-lg bg-slate-100 hover:bg-rose-50 dark:bg-white/[0.04] dark:hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 transition-colors"

@@ -3,35 +3,56 @@ import { POSTS as INITIAL_POSTS } from './posts';
 import type { Post } from './posts';
 
 const STORAGE_KEY = 'inkhel_tech_posts_v1';
+const DELETED_POSTS_KEY = 'inkhel_tech_deleted_posts_v1';
+
+export function getDeletedPostIds(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const data = localStorage.getItem(DELETED_POSTS_KEY);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) return new Set(parsed);
+    }
+  } catch (e) {
+    console.error('Error reading deleted posts', e);
+  }
+  return new Set();
+}
+
+export function markPostDeleted(id: string) {
+  if (typeof window === 'undefined') return;
+  try {
+    const deleted = getDeletedPostIds();
+    deleted.add(id);
+    localStorage.setItem(DELETED_POSTS_KEY, JSON.stringify(Array.from(deleted)));
+  } catch (e) {
+    console.error('Error saving deleted posts', e);
+  }
+}
 
 export function getStoredPosts(): Post[] {
   if (typeof window === 'undefined') return INITIAL_POSTS;
+  const deletedIds = getDeletedPostIds();
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     if (data) {
       const parsed = JSON.parse(data);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // Automatically merge any newly published baked-in posts
-        const existingIds = new Set(parsed.map((p: Post) => p.id));
-        const newBakedPosts = INITIAL_POSTS.filter((p) => !existingIds.has(p.id));
-        if (newBakedPosts.length > 0) {
-          const merged = [...newBakedPosts, ...parsed];
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-          return merged;
-        }
-        return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.filter((p: Post) => !deletedIds.has(p.id));
       }
     }
   } catch (e) {
     console.error('Error reading posts from localStorage', e);
   }
-  return INITIAL_POSTS;
+  return INITIAL_POSTS.filter((p: Post) => !deletedIds.has(p.id));
 }
 
 export function savePostsToStorage(posts: Post[]) {
   if (typeof window === 'undefined') return;
+  const deletedIds = getDeletedPostIds();
+  const cleanPosts = posts.filter((p) => !deletedIds.has(p.id));
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanPosts));
     window.dispatchEvent(new Event('inkhel_posts_updated'));
   } catch (e) {
     console.error('Error saving posts to localStorage', e);
@@ -68,9 +89,11 @@ export function usePosts() {
         const res = await fetch('/api/posts', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0 && isMounted) {
-            setPosts(data);
-            savePostsToStorage(data);
+          if (Array.isArray(data) && isMounted) {
+            const deletedIds = getDeletedPostIds();
+            const cleanPosts = data.filter((p: Post) => !deletedIds.has(p.id));
+            setPosts(cleanPosts);
+            savePostsToStorage(cleanPosts);
           }
         }
       } catch (e) {
@@ -93,7 +116,7 @@ export function usePosts() {
   }, []);
 
   const addPost = async (newPost: Post) => {
-    const updated = [newPost, ...posts];
+    const updated = [newPost, ...posts.filter((p) => p.id !== newPost.id)];
     savePostsToStorage(updated);
     setPosts(updated);
 
@@ -125,14 +148,22 @@ export function usePosts() {
   };
 
   const deletePost = async (id: string) => {
-    const updated = posts.filter((p) => p.id !== id);
-    savePostsToStorage(updated);
-    setPosts(updated);
+    // 1. Mark as permanently deleted locally
+    markPostDeleted(id);
 
+    // 2. Remove from active state immediately
+    const updated = posts.filter((p) => p.id !== id);
+    setPosts(updated);
+    savePostsToStorage(updated);
+
+    // 3. Delete from Cloudflare D1 database
     try {
-      await fetch(`/api/posts/${id}`, {
+      const res = await fetch(`/api/posts/${id}`, {
         method: 'DELETE',
       });
+      if (!res.ok) {
+        console.error('Error deleting from D1:', await res.text());
+      }
     } catch (e) {
       console.error('Error deleting post from Cloudflare D1', e);
     }

@@ -976,7 +976,7 @@ export const AdminEditorPage: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-[#f0f6fc] flex items-center gap-2">
-                    <span>AI Magic Studio (Gemini 3.8 Flash)</span>
+                    <span>AI Magic Studio (Gemini Engine)</span>
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-[#8b949e] mt-0.5">
                     English raw text, leak, news, emaw specs rawn dah la, Mizo thuziak puitlingah a chantir vek ang.
@@ -1075,8 +1075,16 @@ export const AdminEditorPage: React.FC = () => {
               </div>
 
               {aiError && (
-                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-500 font-medium">
-                  {aiError}
+                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-500 font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <span className="flex-1">{aiError}</span>
+                  <button
+                    type="button"
+                    onClick={handleGenerateWithAi}
+                    disabled={isAiGenerating}
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold text-[11px] shadow-sm transition-colors"
+                  >
+                    <span>Hmet Nawn Leh Rawh</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -1084,7 +1092,7 @@ export const AdminEditorPage: React.FC = () => {
             {/* Modal Footer */}
             <div className="p-4 sm:p-5 bg-slate-50/80 dark:bg-[#090d13]/80 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
               <span className="text-[11px] text-slate-400 order-2 sm:order-1">
-                ⚡ Powered by Google Gemini 3.8 Flash · Mizo Tech Engine
+                ⚡ Powered by Google Gemini Multi-Model AI Engine · Mizo Tech
               </span>
 
               <div className="flex items-center gap-2.5 w-full sm:w-auto order-1 sm:order-2 justify-end">

@@ -71,10 +71,15 @@ Return ONLY a valid JSON object matching this schema:
 }
 `;
 
+    // Prioritize high-availability, low-latency models with robust fallbacks
     const CANDIDATE_MODELS = [
-      'gemini-3.8-flash',
+      'gemini-flash-lite-latest',
+      'gemini-3.1-flash-lite',
+      'gemini-3.5-flash-lite',
+      'gemini-3.6-flash',
       'gemini-3.7-flash',
       'gemini-3.5-flash',
+      'gemini-3.8-flash',
       'gemini-flash-latest',
     ];
 
@@ -109,7 +114,12 @@ Return ONLY a valid JSON object matching this schema:
           geminiData = await res.json();
           break;
         } else {
-          lastError = await res.text();
+          const errText = await res.text();
+          lastError = errText;
+          // If busy/rate-limited (503 / 429), pause briefly before trying next model
+          if (res.status === 503 || res.status === 429) {
+            await new Promise((r) => setTimeout(r, 400));
+          }
         }
       } catch (err: any) {
         lastError = err.message;
@@ -118,7 +128,9 @@ Return ONLY a valid JSON object matching this schema:
 
     if (!geminiData) {
       return new Response(
-        JSON.stringify({ error: `Gemini API service busy. Please try again: ${lastError}` }),
+        JSON.stringify({
+          error: `Google Gemini server-ah traffic a tam thut (high demand) a ni e. Second tlemte hnuah hmet nawn leh rawh le: ${lastError}`,
+        }),
         { status: 503, headers: { 'Content-Type': 'application/json' } }
       );
     }

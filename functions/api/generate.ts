@@ -71,38 +71,57 @@ Return ONLY a valid JSON object matching this schema:
 }
 `;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${key}`;
+    const CANDIDATE_MODELS = [
+      'gemini-3.8-flash',
+      'gemini-3.7-flash',
+      'gemini-3.5-flash',
+      'gemini-flash-latest',
+    ];
 
-    const geminiResponse = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: 'user',
-            parts: [
+    let geminiData: any = null;
+    let lastError: string = '';
+
+    for (const model of CANDIDATE_MODELS) {
+      try {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+        const res = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
               {
-                text: `${systemInstruction}\n\nHere is the raw English tech text to transform into a Mizo article:\n\n${text}`,
+                role: 'user',
+                parts: [
+                  {
+                    text: `${systemInstruction}\n\nHere is the raw English tech text to transform into a Mizo article:\n\n${text}`,
+                  },
+                ],
               },
             ],
-          },
-        ],
-        generationConfig: {
-          response_mime_type: 'application/json',
-          temperature: 0.7,
-        },
-      }),
-    });
+            generationConfig: {
+              response_mime_type: 'application/json',
+              temperature: 0.7,
+            },
+          }),
+        });
 
-    if (!geminiResponse.ok) {
-      const errText = await geminiResponse.text();
-      return new Response(
-        JSON.stringify({ error: `Gemini API error (${geminiResponse.status}): ${errText}` }),
-        { status: geminiResponse.status, headers: { 'Content-Type': 'application/json' } }
-      );
+        if (res.ok) {
+          geminiData = await res.json();
+          break;
+        } else {
+          lastError = await res.text();
+        }
+      } catch (err: any) {
+        lastError = err.message;
+      }
     }
 
-    const geminiData: any = await geminiResponse.json();
+    if (!geminiData) {
+      return new Response(
+        JSON.stringify({ error: `Gemini API service busy. Please try again: ${lastError}` }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
     const rawOutput = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!rawOutput) {

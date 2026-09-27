@@ -8,6 +8,56 @@ INSERT OR IGNORE INTO categories (name) VALUES ('Deals');
 INSERT OR REPLACE INTO posts (
     id, slug, title, excerpt, category, author, published_at, read_time, image, content, tags, specs, pros, cons, affiliate_links
   ) VALUES (
+    'vivo-v80-price-leaked-india',
+    'vivo-v80-price-leaked-india-specs-launch-date',
+    'Vivo V80 India Hralh Chhuahna Tur Man Leak: Zeiss Camera, 7,200mAh Battery leh Specs Kimchang',
+    'Vivo V80 chu India rama hralh chhuah a nih hmain a man tur a darh ta mai. Zeiss 50MP camera setup, Snapdragon 7 Gen 4, leh 7,200mAh battery lian em em a keng tel dawn a ni.',
+    'Smartphones',
+    'iTECH Editorial',
+    'Sep 27, 2026',
+    5,
+    '/images/vivo-v80-price-leak.webp',
+    '<p class="lead">Vivo chuan an V-Series smartphone thar ber tur <strong>Vivo V80</strong> chu India rama tlangzarh an tum hnai hle a, a hralh chhuahna tur man (price leak) pawh tlangzarh a nih hmain social media lamah a darh ta rup mai. Company lam hian a man dik tak la puangzar lo mah se, a hralh chhuahna man tur awm ang chu tipster-te atangin hriat theih a ni ta a ni.</p>
+
+<p>Vivo hian he phone chungchang hi a hma lamin a lo nemnghet (confirm) nual tawh a — a screen mawi tak, Zeiss nena an thawkdun camera setup ropui, battery lian em em leh software thlengin a chipchiarin puan a lo ni tawh a. Camera lama thil thar 4K cinematic video recording leh AI hmanga thlalak cheina te a keng tel bawk ang.</p>
+
+<h2>India Rama A Man Tur Leak: Engzat Man Nge Ni Ang?</h2>
+<p>Tech tipster hriat hlawh tak Ahsan Kharbai (@AHSANKHARBAI) tarlan danin, Vivo V80 (8GB RAM + 128GB storage) bawm chunga <strong>Box MRP</strong> inziak chu <strong>Rs. 1,19,999</strong> a ni dawn a. Nimahsela, smartphone-te hi a tlangpuiin box MRP aiin a hralh chhuahna man tak tak (actual selling price) a tlawm zawk thin a, tipster chuan Vivo V80 hi <strong>Rs. 60,000 chuang</strong> hreta hralh chhuah tura beisei a nih thu a sawi bawk.</p>
+
+<p>Chipset lamah Vivo V80 hian Qualcomm Snapdragon 7 Gen 4 processor a hmang dawn niin an tarlang a, LPDDR4X RAM leh UFS 3.1 storage a nei bawk ang. Chu bakah, chhe mai mai lo turin IP68 leh IP69 dust & water-resistant rating sang tak a nei dawn bawk a ni.</p>
+
+<blockquote>"Vivo V80 hian Zeiss co-engineered 50MP main camera, 50MP telephoto lens leh 7,200mAh battery lian em em a keng tel a, V-series zinga flagship ang maia duan hmasa ber a tling ang."</blockquote>
+
+<h2>Display leh One-Piece Cold-Carved Glass Design</h2>
+<p>Vivo hian V80 hi <strong>6.59-inch 1.5K OLED display</strong> a ni dawn tih an lo nemnghet tawh a, 144Hz refresh rate neiin, nisa hnuaia chhiar fiah theihna tur local peak brightness pawh <strong>5,000 nits</strong> lai a tling thei dawn a ni.</p>
+
+<p>A hnung lam hi one-piece cold-carved glass hmanga duan niin, a camera dahna (floating camera module) chu mawi takin a in-chher chhuak a. Software lamah pawh Android 17-a innghat <strong>OriginOS 7</strong> thar ber a hmang dawn bawk a ni.</p>
+
+<h2>Zeiss 50MP Camera Ropui: 3x Optical Zoom & 4K Cinematic Video</h2>
+<p>Thlalak lam ngaintute tan Vivo V80 hian Zeiss nena an duanchhuah camera ropui tak a chhawpchhuak dawn:</p>
+<ul>
+  <li><strong>Primary Camera:</strong> 50-megapixel OIS sensor fiah tak</li>
+  <li><strong>Telephoto Camera:</strong> 50-megapixel Night Telephoto sensor (3x optical zoom leh up to 100x digital zoom theihna)</li>
+  <li><strong>Ultra-wide Camera:</strong> 8-megapixel lens</li>
+  <li><strong>Front Selfie:</strong> 50-megapixel Group Selfie camera</li>
+</ul>
+<p>Video lamah 4K Cinematic Video leh 4K 60fps recording a theih vek a. AI Creative Camera, Live Sticker Collage leh AI Diwali Portrait 2.0 te pawh a thawk nghal bawk ang.</p>
+
+<h2>7,200mAh Battery Lian Em Em leh 90W FlashCharge</h2>
+<p>Phone lian leh battery daih rei duh tan Vivo V80 hi a duhawm hle dawn a. <strong>7,200mAh battery</strong> lian em em a keng tel a, <strong>90W FlashCharge</strong> chak tak a thlawp bawk. Vivo tarlan danin, darkar 14 chhung navigation (GPS) hman theih niin, darkar 39.5 chhung video playback a daih thei a ni.</p>
+
+<h2>Tlangzarh Hun (Launch Date) leh Rawng Thlan Turte</h2>
+<p>Vivo V80 hi India ramah <strong>October 6, 2026 (12:00 PM IST)</strong> hian tlangzarh a ni dawn a. Rawng mawi tak tak pathum — <em>Sunrise Anthem, Horizon Blue</em>, leh <em>Stellar Black</em> a awm ang a. Vivo India official website, Amazon, Flipkart leh offline retail dawr hrang hrangah lei theih tura chhawp chhuah a ni ang.</p>',
+    '["vivo","vivo v80","smartphones","zeiss","camera","price leak","snapdragon","india"]',
+    '{"display":"6.59-inch 1.5K OLED, 144Hz, 5,000 nits Peak Brightness","processor":"Qualcomm Snapdragon 7 Gen 4","camera":"50MP OIS Main + 50MP Night Telephoto (3x Optical, 100x Zoom) + 8MP UW | 50MP Selfie (Zeiss)","battery":"7,200mAh Massive Battery","charging":"90W FlashCharge Wired"}',
+    '["Zeiss co-engineered 50MP triple sensor system (50MP Main, 50MP Telephoto 3x, leh 50MP Selfie)","7,200mAh battery lian em em leh 90W FlashCharge chak tak","6.59-inch 1.5K OLED display êm em (144Hz & 5,000 nits brightness)","IP68 leh IP69 water & dust resistance ṭha chungchuang","One-piece cold-carved glass design mawi leh changkang"]',
+    '["Box MRP to tak (Rs. 1,19,999) leh a zawrhna man hi Rs. 60,000 chuang tura chhut a ni","LPDDR4X RAM leh UFS 3.1 storage a hmang (LPDDR5X leh UFS 4.0 a ni lo)"]',
+    '{}'
+  );
+
+INSERT OR REPLACE INTO posts (
+    id, slug, title, excerpt, category, author, published_at, read_time, image, content, tags, specs, pros, cons, affiliate_links
+  ) VALUES (
     'realme-16-pro-harry-potter',
     'realme-16-pro-5g-harry-potter-edition',
     'Realme 16 Pro 5G Harry Potter Edition: Hogwarts Theme Mawi Khawm Chingte Tana Duanchhuah',
